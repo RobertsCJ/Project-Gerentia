@@ -1,6 +1,7 @@
 from lib.adm import *
 from lib.estoque import *
 from lib.vendas import *
+from lib import intro
 import sqlite3
 
 
@@ -35,5 +36,5 @@ def iniciar_sistema():
     conn.close()
 
 
-if __name__ == "__main__":
-    iniciar_sistema()
+if __name__ == "__main__":    
+	iniciar_sistema()
