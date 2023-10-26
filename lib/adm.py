@@ -1,18 +1,17 @@
 import os
 import sqlite3
 import secrets
-import pwinput
+from lib.check_module import *
 from os import system
 from time import sleep
 
-
+so = 'cls' if os.name == 'nt' else 'clear')
 def limpar_a_tela() -> None:
     """
     Limpa a tela do terminal.
     :return:
     """
-    system('cls' if os.name == 'nt' else 'clear')
-
+    exec(f"system('{so}')")
 
 def criar_tabela_funcionarios(cursor):
     """
@@ -43,7 +42,7 @@ def cadastrar_funcionario(cursor):
     nome = str(input('Nome do funcionário: '))
     cargo = str(input('Cargo do funcionário? '))
     nome_usuario = str(input('Nome de usuário: '))
-    senha = pwinput.pwinput('Cadastre uma senha: ')
+    senha = exec("{password_module}('Cadastre uma senha: ')")
     cursor.execute("""
     INSERT INTO funcionarios (matricula, nome, cargo, nome_usuario, senha)
     VALUES(?, ?, ?, ?, ?);

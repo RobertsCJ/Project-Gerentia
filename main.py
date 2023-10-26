@@ -1,6 +1,7 @@
 from lib.adm import *
 from lib.estoque import *
 from lib.vendas import *
+from lib.check_modules import *
 from lib import intro
 import sqlite3
 
@@ -11,7 +12,7 @@ def login(cursor) -> None:
     :return: None
     """
     nome_usuario = str(input('Informe o nome de usuário: '))
-    senha = pwinput.pwinput('Informe a senha: ')
+    senha = exec("{password_module}('Informe a senha: ')")
     cursor.execute("""
     SELECT * FROM funcionarios WHERE nome_usuario = ? AND senha = ?;
     """, (nome_usuario, senha))

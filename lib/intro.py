@@ -2,10 +2,7 @@ from time import sleep
 from os import system, name
 
 class Intro:
-	if name == "posix":
-		clear_screen =  "'clear'"
-	elif name == "nt":
-		clear_screen = "'cls'"
+	clear_screen = "'clear'" if name == "posix" else "'cls'"
 
 	def __init__(self, string, color, end='\033[m'):
 		self.string = string
