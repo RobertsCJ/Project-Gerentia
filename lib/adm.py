@@ -157,7 +157,7 @@ def menu():
 
 
 def sistema_adm():
-    conn = sqlite3.connect('data/gerentia.db')
+    conn = sqlite3.connect('database/gerentia.db')
     cursor = conn.cursor()
     continuar = True
     while continuar:

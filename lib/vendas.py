@@ -1,6 +1,6 @@
 import sqlite3
 from datetime import datetime
-from Gerentia.lib.estoque import ver_estoque
+from lib.estoque import ver_estoque
 
 
 def criar_tabela_vendas(cursor) -> None:

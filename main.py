@@ -28,7 +28,7 @@ def login(cursor) -> None:
 
 
 def iniciar_sistema():
-    conn = sqlite3.connect('data/gerentia.db')
+    conn = sqlite3.connect('database/gerentia.db')
     cursor = conn.cursor()
     login(cursor)
     conn.commit()
