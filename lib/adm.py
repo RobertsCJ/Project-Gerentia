@@ -49,7 +49,7 @@ def cadastrar_funcionario(cursor):
     INSERT INTO funcionarios (matricula, nome, cargo, nome_usuario, senha)
     VALUES(?, ?, ?, ?, ?);
     """, (matricula, nome, cargo, nome_usuario, senha))
-    log(nome_usuario, f'"{nome_usuario}" cadastrado no sistema')
+    log("user", f'"{user}" cadastrado no sistema')
 
 def demitir_funcionario(cursor):
     """
@@ -64,7 +64,7 @@ def demitir_funcionario(cursor):
     DELETE FROM funcionarios WHERE matricula = ?;
     """, (matricula,))
     print(f'{"-" * 100}\n{"FUNCIONÁRIO DEMITIDO":^100}\n{"-" * 100}')
-    log(nome_usuario, 'X foi demitido') #######
+    log("user", 'user foi demitido') #######
 
 def alterar_dados(cursor):
     """
@@ -80,7 +80,7 @@ def alterar_dados(cursor):
     UPDATE funcionarios SET cargo = ? WHERE matricula = ?;
     """, (novo_cargo, matricula))
     print(f'{"-"*160}\n{"ATUALIZADO COM SUCESSO!":^160}\n{"-"*160}')
-    log(nome_usuario, 'Dado alterado') ##########
+    log("user", 'Dado Y  alterado') ##########
 
 def mostrar_funcionarios(cursor):
     """

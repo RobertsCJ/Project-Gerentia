@@ -45,7 +45,7 @@ def adicionar_prod(cursor) -> None:
     INSERT INTO estoque (cod, nome, descricao, quantidade, preco_compra, preco_venda, data_atual, hora_atual)
     VALUES (?, ?, ?, ?, ?, ?, CURRENT_DATE, ?)
     """, (cod, nome, descricao, quantidade, preco_compra, preco_venda, hora_atual))
-    log(nome_usuario, 'X produto adicionado')
+    log('user', 'produto X adicionado')
 
 def ver_estoque(cursor) -> None:
     """
@@ -79,7 +79,7 @@ def excluir_produto(cursor) -> None:
     DELETE FROM estoque WHERE cod = ?;
     """, (cod,))
     print(f'{"-" * 160}\n{"PRODUTO EXCLUÍDO":^160}\n{"-" * 160}')
-    log(nome_usuario, 'X produto excluido')
+    log('user', 'produto X excluido')
 
 def atualizar_produto(cursor) -> None:
     """
@@ -99,7 +99,7 @@ def atualizar_produto(cursor) -> None:
     UPDATE estoque SET nome = ?, descricao = ?, quantidade = ?, preco_compra = ?, preco_venda = ? WHERE cod = ?;
     """, (nome, descricao, quantidade, preco_compra, preco_venda, cod))
     print(f'{"-" * 160}\n{"ATUALIZADO COM SUCESSO!":^160}\n{"-" * 160}')
-    log(nome_usuario, 'X produto atualizado')
+    log('user', 'produto X atualizado')
 
 def menu():
     print(f"""

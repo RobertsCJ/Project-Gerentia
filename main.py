@@ -28,7 +28,7 @@ def login(cursor) -> None:
             sistema_vendas()
     else:
         print('Usuário ou senha inválidos.')
-
+	log('guest', 'falha na tentativa de entrada')
 
 def iniciar_sistema():
     conn = sqlite3.connect('database/gerentia.db')

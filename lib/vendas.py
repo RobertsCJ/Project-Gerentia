@@ -1,4 +1,4 @@
-import sqlite3
+ import sqlite3
 from datetime import datetime
 from lib.estoque import ver_estoque
 

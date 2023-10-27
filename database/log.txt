@@ -7,3 +7,13 @@ Toim|Friday|27/10/2023|10:39:34|
 	->Entrou no sistema
 Toim|Friday|27/10/2023|10:39:52|
 	-> Entrou no sistema
+robs2004|Friday|27/10/2023|13:56:18|
+	-> "robs2004" cadastrado no sistema
+user|Friday|27/10/2023|14:01:09|
+	-> user foi demitido
+user|Friday|27/10/2023|14:02:09|
+	-> Dado Y  alterado
+user|Friday|27/10/2023|14:03:18|
+	-> "user" cadastrado no sistema
+user|Friday|27/10/2023|14:03:45|
+	-> user foi demitido
