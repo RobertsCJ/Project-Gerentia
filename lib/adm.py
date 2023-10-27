@@ -5,7 +5,8 @@ from lib.check_module import *
 from os import system
 from time import sleep
 
-so = 'cls' if os.name == 'nt' else 'clear')
+so = 'cls' if os.name == 'nt' else 'clear'
+
 def limpar_a_tela() -> None:
     """
     Limpa a tela do terminal.
@@ -42,7 +43,7 @@ def cadastrar_funcionario(cursor):
     nome = str(input('Nome do funcionário: '))
     cargo = str(input('Cargo do funcionário? '))
     nome_usuario = str(input('Nome de usuário: '))
-    senha = exec("{password_module}('Cadastre uma senha: ')")
+    senha = exec(f"{password_module}('Cadastre uma senha: ')")
     cursor.execute("""
     INSERT INTO funcionarios (matricula, nome, cargo, nome_usuario, senha)
     VALUES(?, ?, ?, ?, ?);
