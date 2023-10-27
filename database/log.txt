@@ -1,0 +1,9 @@
+
+Toim; Friday| 27/10/2023| 10:38:56|
+	->Entrou no sistema
+Toim| Friday| 27/10/2023| 10:39:08|
+	->Entrou no sistema
+Toim|Friday|27/10/2023|10:39:34|
+	->Entrou no sistema
+Toim|Friday|27/10/2023|10:39:52|
+	-> Entrou no sistema

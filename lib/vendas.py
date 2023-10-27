@@ -90,7 +90,7 @@ def estorno(cursor) -> None:
     """, (id_venda,))
 
     print(f'Estorno realizado com sucesso! A quantidade de {nome_venda} no estoque agora é {nova_quantidade}.')
-
+    log(nome_usuario, 'X produto estornado')
 
 def realizar_venda(cursor) -> None:
     """
@@ -137,7 +137,7 @@ def realizar_venda(cursor) -> None:
         """, (nova_quantidade, nome))
 
     print(f'Venda realizada com sucesso! Total: {total}')
-
+    log(nome_usuario, 'X produto vendido')
 
 def encontrar_produto(cursor):
     """

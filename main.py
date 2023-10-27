@@ -19,6 +19,7 @@ def login(cursor) -> None:
     usuario = cursor.fetchone()
 
     if usuario is not None:
+        log(nome_usuario, 'Entrou no sistema')
         if usuario[2] == 'Administrador':
             sistema_adm()
         if usuario[2] == 'Estoque':
@@ -37,5 +38,5 @@ def iniciar_sistema():
     conn.close()
 
 
-if __name__ == "__main__":    
-	iniciar_sistema()
+if __name__ == "__main__":
+    iniciar_sistema()

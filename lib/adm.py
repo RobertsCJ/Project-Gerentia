@@ -4,6 +4,7 @@ import secrets
 from lib.check_module import *
 from os import system
 from time import sleep
+from datetime import datetime
 
 so = 'cls' if os.name == 'nt' else 'clear'
 
@@ -48,7 +49,7 @@ def cadastrar_funcionario(cursor):
     INSERT INTO funcionarios (matricula, nome, cargo, nome_usuario, senha)
     VALUES(?, ?, ?, ?, ?);
     """, (matricula, nome, cargo, nome_usuario, senha))
-
+    log(nome_usuario, f'"{nome_usuario}" cadastrado no sistema')
 
 def demitir_funcionario(cursor):
     """
@@ -63,7 +64,7 @@ def demitir_funcionario(cursor):
     DELETE FROM funcionarios WHERE matricula = ?;
     """, (matricula,))
     print(f'{"-" * 100}\n{"FUNCIONÁRIO DEMITIDO":^100}\n{"-" * 100}')
-
+    log(nome_usuario, 'X foi demitido') #######
 
 def alterar_dados(cursor):
     """
@@ -79,7 +80,7 @@ def alterar_dados(cursor):
     UPDATE funcionarios SET cargo = ? WHERE matricula = ?;
     """, (novo_cargo, matricula))
     print(f'{"-"*160}\n{"ATUALIZADO COM SUCESSO!":^160}\n{"-"*160}')
-
+    log(nome_usuario, 'Dado alterado') ##########
 
 def mostrar_funcionarios(cursor):
     """
@@ -144,6 +145,19 @@ def ver_vendas(cursor) -> None:
         print(f'{venda[0]:4} | {venda[1]:20} | {venda[2]:10} | {venda[3]:5} | {venda[4]:5} | {venda[5]:10} | {venda[6]}')
         total += venda[4]
     print(f'O total vendido R${total:.2f}')
+
+def log(user, action):
+    date_now = datetime.now().date()
+    time_now = datetime.now().time()
+    data = ''
+
+    data += user + '|'
+    data += str(date_now.strftime('%A')) + '|'
+    data += str(date_now.strftime('%d/%m/%Y')) + '|'
+    data += str(time_now)[:8] + '|\n'
+    data += '\t-> ' + action + '\n'
+    with open("database/log.txt", 'a') as file:
+        file.write(data)
 
 
 def menu():
