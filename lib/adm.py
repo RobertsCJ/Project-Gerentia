@@ -49,7 +49,7 @@ def cadastrar_funcionario(cursor):
     INSERT INTO funcionarios (matricula, nome, cargo, nome_usuario, senha)
     VALUES(?, ?, ?, ?, ?);
     """, (matricula, nome, cargo, nome_usuario, senha))
-    log("user", f'"{user}" cadastrado no sistema')
+    log("user", f'"{nome_usuario}" cadastrado no sistema')
 
 def demitir_funcionario(cursor):
     """
@@ -176,7 +176,7 @@ def sistema_adm():
     continuar = True
     while continuar:
         menu()
-        opcao = int(input('Escolha a opção desejada: '))
+	opcao = int(input('Escolha a opção desejada: '))
 
         if opcao == 1:
             cadastrar_funcionario(cursor)
@@ -187,6 +187,7 @@ def sistema_adm():
         elif opcao == 4:
             demitir_funcionario(cursor)
         elif opcao == 5:
+            log('usuario', 'saiu do sistema')
             continuar = False
         else:
             print('ERRO! Opção inválida.')

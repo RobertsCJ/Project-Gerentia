@@ -27,3 +27,27 @@ Admin|Friday|27/10/2023|20:43:50|
 	-> Entrou no sistema
 Admin|Saturday|28/10/2023|09:43:02|
 	-> Entrou no sistema
+Jose|Saturday|28/10/2023|09:48:04|
+	-> Entrou no sistema
+Jose|Saturday|28/10/2023|09:51:25|
+	-> Entrou no sistema
+user|Saturday|28/10/2023|09:51:50|
+	-> produto X excluido
+Maria|Saturday|28/10/2023|09:52:37|
+	-> Entrou no sistema
+Maria|Saturday|28/10/2023|09:54:28|
+	-> Entrou no sistema
+Maria|Saturday|28/10/2023|09:57:06|
+	-> Entrou no sistema
+nome_usuario|Saturday|28/10/2023|09:57:35|
+	-> X produto vendido
+Admin|Saturday|28/10/2023|10:21:58|
+	-> Entrou no sistema
+Admin|Saturday|28/10/2023|10:22:51|
+	-> Entrou no sistema
+Admin|Saturday|28/10/2023|10:24:06|
+	-> Entrou no sistema
+user|Saturday|28/10/2023|10:24:24|
+	-> "kamesama" cadastrado no sistema
+usuario|Saturday|28/10/2023|10:24:42|
+	-> saiu do sistema

@@ -1,7 +1,7 @@
 import sqlite3
 from datetime import datetime
 from lib.estoque import ver_estoque
-
+from lib.adm import *
 
 def criar_tabela_vendas(cursor) -> None:
     """
@@ -90,7 +90,7 @@ def estorno(cursor) -> None:
     """, (id_venda,))
 
     print(f'Estorno realizado com sucesso! A quantidade de {nome_venda} no estoque agora é {nova_quantidade}.')
-    log(nome_usuario, 'X produto estornado')
+    log('nome_usuario', 'X produto estornado')
 
 def realizar_venda(cursor) -> None:
     """
@@ -137,7 +137,7 @@ def realizar_venda(cursor) -> None:
         """, (nova_quantidade, nome))
 
     print(f'Venda realizada com sucesso! Total: {total}')
-    log(nome_usuario, 'X produto vendido')
+    log('nome_usuario', 'X produto vendido')
 
 def encontrar_produto(cursor):
     """
@@ -177,7 +177,7 @@ def menu():
 
 
 def sistema_vendas():
-    conn = sqlite3.connect('data/gerentia.db')
+    conn = sqlite3.connect('database/gerentia.db')
     cursor = conn.cursor()
 
     continuar = True
@@ -194,6 +194,7 @@ def sistema_vendas():
         elif opcao == 4:
             ver_vendas_do_dia(cursor)
         elif opcao == 5:
+            log('usuario', 'saiu do sistema')
             continuar = False
         else:
             print('ERRO! Opção inválida.')

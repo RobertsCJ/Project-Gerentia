@@ -114,7 +114,7 @@ def menu():
 
 
 def sistema_estoque():
-    conn = sqlite3.connect('data/gerentia.db')
+    conn = sqlite3.connect('database/gerentia.db')
     cursor = conn.cursor()
     continuar = True
     while continuar:
@@ -130,6 +130,7 @@ def sistema_estoque():
         elif opcao == 4:
             atualizar_produto(cursor)
         elif opcao == 5:
+            log('usuario', 'saiu do sistema')
             continuar = False
         else:
             print('ERRO: Opção inválida!')
