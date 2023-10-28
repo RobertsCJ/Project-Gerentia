@@ -44,7 +44,7 @@ def cadastrar_funcionario(cursor):
     nome = str(input('Nome do funcionário: '))
     cargo = str(input('Cargo do funcionário? '))
     nome_usuario = str(input('Nome de usuário: '))
-    senha = exec(f"{password_module}('Cadastre uma senha: ')")
+    senha = password_module('Cadastre uma senha: ')
     cursor.execute("""
     INSERT INTO funcionarios (matricula, nome, cargo, nome_usuario, senha)
     VALUES(?, ?, ?, ?, ?);

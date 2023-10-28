@@ -2,9 +2,7 @@ from lib.adm import *
 from lib.estoque import *
 from lib.vendas import *
 from lib.check_module import *
-from lib import intro
-import sqlite3
-
+from lib import intro; import sqlite3
 
 def login(cursor) -> None:
     """
@@ -12,7 +10,7 @@ def login(cursor) -> None:
     :return: None
     """
     nome_usuario = str(input('Informe o nome de usuário: '))
-    senha = exec(f"{password_module}('Informe a senha: ')")
+    senha = password_module('Informe a senha: ')
     cursor.execute("""
     SELECT * FROM funcionarios WHERE nome_usuario = ? AND senha = ?;
     """, (nome_usuario, senha))
@@ -28,7 +26,7 @@ def login(cursor) -> None:
             sistema_vendas()
     else:
         print('Usuário ou senha inválidos.')
-	log('guest', 'falha na tentativa de entrada')
+        log('guest', 'falha na tentativa de entrada')
 
 def iniciar_sistema():
     conn = sqlite3.connect('database/gerentia.db')

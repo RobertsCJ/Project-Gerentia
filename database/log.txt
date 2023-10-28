@@ -17,3 +17,13 @@ user|Friday|27/10/2023|14:03:18|
 	-> "user" cadastrado no sistema
 user|Friday|27/10/2023|14:03:45|
 	-> user foi demitido
+guest|Friday|27/10/2023|20:36:39|
+	-> falha na tentativa de entrada
+guest|Friday|27/10/2023|20:37:21|
+	-> falha na tentativa de entrada
+guest|Friday|27/10/2023|20:41:55|
+	-> falha na tentativa de entrada
+Admin|Friday|27/10/2023|20:43:50|
+	-> Entrou no sistema
+Admin|Saturday|28/10/2023|09:43:02|
+	-> Entrou no sistema
