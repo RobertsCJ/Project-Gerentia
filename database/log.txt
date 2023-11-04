@@ -51,3 +51,13 @@ user|Saturday|28/10/2023|10:24:24|
 	-> "kamesama" cadastrado no sistema
 usuario|Saturday|28/10/2023|10:24:42|
 	-> saiu do sistema
+Admin|Saturday|04/11/2023|14:53:25|
+	-> Entrou no sistema
+Admin|Saturday|04/11/2023|14:54:04|
+	-> Entrou no sistema
+user|Saturday|04/11/2023|14:54:10|
+	-> user foi demitido
+user|Saturday|04/11/2023|14:54:32|
+	-> user foi demitido
+guest|Saturday|04/11/2023|14:55:30|
+	-> falha na tentativa de entrada

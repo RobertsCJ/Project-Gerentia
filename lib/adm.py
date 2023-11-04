@@ -11,9 +11,24 @@ so = 'cls' if os.name == 'nt' else 'clear'
 def limpar_a_tela() -> None:
     """
     Limpa a tela do terminal.
-    :return:
+    :return: nothing
     """
     exec(f"system('{so}')")
+
+
+def log(user, action):
+            date_now = datetime.now().date()
+            time_now = datetime.now().time()
+            data = ''
+
+            data += user + '|'
+            data += str(date_now.strftime('%A')) + '|'
+            data += str(date_now.strftime('%d/%m/%Y')) + '|'
+            data += str(time_now)[:8] + '|\n'
+            data += '\t-> ' + action + '\n'
+            with open("database/log.txt", 'a') as file:
+                file.write(data)
+
 
 def criar_tabela_funcionarios(cursor):
     """
@@ -31,133 +46,132 @@ def criar_tabela_funcionarios(cursor):
         );
     """)
 
+class Funcionario:
+	def __init__(self, matricula, nome, cargo, nome_usuario, senha):
+		self.matricula = matricula
+		self.nome = nome
+		self.cargo = cargo
+		self.nome_usuario = usuario
+		self.senha = senha
+class BD_Funcionarios:
+	def __init__(self, cursor):
+		self.cursor = cursor
 
-def cadastrar_funcionario(cursor):
-    """
-    Cadastra um novo funcionário na tabela de funcionários.
-    :param cursor: Cursor do banco de dados SQLite.
-    :return:
-    """
-    limpar_a_tela()
-    criar_tabela_funcionarios(cursor)
-    matricula = secrets.token_hex(5)
-    nome = str(input('Nome do funcionário: '))
-    cargo = str(input('Cargo do funcionário? '))
-    nome_usuario = str(input('Nome de usuário: '))
-    senha = password_module('Cadastre uma senha: ')
-    cursor.execute("""
-    INSERT INTO funcionarios (matricula, nome, cargo, nome_usuario, senha)
-    VALUES(?, ?, ?, ?, ?);
-    """, (matricula, nome, cargo, nome_usuario, senha))
-    log("user", f'"{nome_usuario}" cadastrado no sistema')
+	def cadastrar_funcionario(self):
+		"""
+		Cadastra um novo funcionário na tabela de funcionários.
+		:param self:
+		:return: nothing
+		"""
+		limpar_a_tela()
+		criar_tabela_funcionarios(cursor)
+		matricula = secrets.token_hex(5) 
+		nome = str(input('Nome do funcionário: '))
+		cargo = str(input('Cargo do funcionário? '))
+		nome_usuario = str(input('Nome de usuário: '))
+		senha = password_module('Cadastre uma senha: ')
+		funcionario = Funcionario(matricula, nome, cargo, nome_usuario, senha)
 
-def demitir_funcionario(cursor):
-    """
-    Demite um funcionário da tabela de funcionários.
-    :param cursor: Cursor do banco de dados SQLite.
-    :return:
-    """
-    limpar_a_tela()
-    print(f'{"-" * 100}\n{"REMOVENDO FUNCIONÁRIO":^100}\n{"-" * 100}')
-    matricula = str(input('Informe a matricula do funcionário: '))
-    cursor.execute("""
-    DELETE FROM funcionarios WHERE matricula = ?;
-    """, (matricula,))
-    print(f'{"-" * 100}\n{"FUNCIONÁRIO DEMITIDO":^100}\n{"-" * 100}')
-    log("user", 'user foi demitido') #######
+		self.cursor.execute("""
+	    	INSERT INTO funcionarios (matricula, nome, cargo, nome_usuario, senha)
+	    	VALUES(?, ?, ?, ?, ?);
+	    	""", (funcionario.matricula, funcionario.nome, funcionario.cargo, funcionario.nome_usuario, funcionario.senha))
+		log("user", f'"{funcionario.nome_usuario}" cadastrado no sistema')
 
-def alterar_dados(cursor):
-    """
-    Altera os dados de um funcionário na tabela de funcionários.
-    :param cursor: Cursor do banco de dados SQLite.
-    :return:
-    """
-    print(f'{"-"*160}\n{"ATUALIZAÇÃO CADASTRAL":^160}\n{"-"*160}')
-    mostrar_funcionarios(cursor)
-    matricula = str(input('Informe a matricula do funcionário: '))
-    novo_cargo = str(input('Qual será o novo cargo do funcionário? '))
-    cursor.execute("""
-    UPDATE funcionarios SET cargo = ? WHERE matricula = ?;
-    """, (novo_cargo, matricula))
-    print(f'{"-"*160}\n{"ATUALIZADO COM SUCESSO!":^160}\n{"-"*160}')
-    log("user", 'Dado Y  alterado') ##########
+	def demitir_funcionario(self):
+		"""
+		Demite um funcionário da tabela de funcionários.
+		:param self:
+		:return:
+		"""
+		limpar_a_tela()
+		print(f'{"-" * 100}\n{"REMOVENDO FUNCIONÁRIO":^100}\n{"-" * 100}')
+		matricula = str(input('Informe a matricula do funcionário: '))
+		self.cursor.execute("""
+		DELETE FROM funcionarios WHERE matricula = ?;
+		""", (matricula,))
+		print(f'{"-" * 100}\n{"FUNCIONÁRIO DEMITIDO":^100}\n{"-" * 100}')
+		log("user", 'user foi demitido') #######
 
-def mostrar_funcionarios(cursor):
-    """
-    Mostra os dados dos funcionários na tabela de funcionários.
-    :param cursor: Cursor do banco de dados SQLite.
-    :return:
-    """
-    cursor.execute("""
-   SELECT * FROM funcionarios;
-   """)
-    dados = cursor.fetchall()
+	def alterar_dados(self):
+		"""
+		Altera os dados de um funcionário na tabela de funcionários.
+		:param self:
+		:return:
+		"""
+		print(f'{"-"*160}\n{"ATUALIZAÇÃO CADASTRAL":^160}\n{"-"*160}')
+		mostrar_funcionarios(self.cursor)
+		matricula = str(input('Informe a matricula do funcionário: '))
+		novo_cargo = str(input('Qual será o novo cargo do funcionário? '))
+		self.cursor.execute("""
+		UPDATE funcionarios SET cargo = ? WHERE matricula = ?;
+		""", (novo_cargo, matricula))
+		print(f'{"-"*160}\n{"ATUALIZADO COM SUCESSO!":^160}\n{"-"*160}')
+		log("user", 'Dado Y  alterado') ##########
 
-    print(f'{"-" * 100}\n{"FUNCIONÁRIOS CADASTRADOS":^100}\n{"-" * 100}')
-    print(f'{"MATRICULA":10} | {"NOME":25} | {"CARGO":25} | {"NOME USUÁRIO":15} | {"SENHA"}\n{"-" * 100}')
-    for dado in dados:
-        print(f'{dado[0]:^10} | {dado[1]:25} | {dado[2]:25} | {dado[3]:15} | {dado[4]}')
+	def mostrar_funcionarios(self):
+		"""
+		Mostra os dados dos funcionários na tabela de funcionários.
+		:param self:
+		:return:
+		"""
+		self.cursor.execute("""
+		SELECT * FROM funcionarios;
+		""")
+		dados = self.cursor.fetchall()
 
-
-def ver_vendas_de_um_dia(cursor) -> None:
-    """
-    Solicita ao usuário que insira um dia, mês e ano. Em seguida, recupera todos os registros da tabela 'vendas'
-    que têm a data especificada e os imprime.
-    :param cursor:
-    :return:
-    """
-    total = 0
-    dia = input('Digite o dia: ')
-    mes = input('Digite o mês: ')
-    ano = input('Digite o ano: ')
-    data = f'{ano}-{mes}-{dia}'
-
-    cursor.execute("""
-    SELECT * FROM vendas WHERE data = ?;
-    """, (data,))
-    vendas = cursor.fetchall()
-
-    print(f'{"-"*160}\n{"VENDAS DO DIA":^160}\n{"-"*160}')
-    print(f'{"ID":4} | {"NOME":20} | {"QUANTIDADE":10} | {"VALOR":5} | {"TOTAL":5} | {"DATA":10} | {"HORA"}')
-    print(f'{"-"*160}')
-    for venda in vendas:
-        print(f'{venda[0]:4} | {venda[1]:20} | {venda[2]:10} | {venda[3]:5} | {venda[4]:5} | {venda[5]:10} | {venda[6]}')
-        total += venda[4]
-    print(f'O total vendido R${total:.2f}')
+		print(f'{"-" * 100}\n{"FUNCIONÁRIOS CADASTRADOS":^100}\n{"-" * 100}')
+		print(f'{"MATRICULA":10} | {"NOME":25} | {"CARGO":25} | {"NOME USUÁRIO":15} | {"SENHA"}\n{"-" * 100}')
+		for dado in dados:
+			print(f'{dado[0]:^10} | {dado[1]:25} | {dado[2]:25} | {dado[3]:15} | {dado[4]}')
 
 
-def ver_vendas(cursor) -> None:
-    """
-    Recupera todos os registros da tabela 'vendas' e os imprime.
-    :param cursor:
-    :return:
-    """
-    total = 0
-    cursor.execute("""
-    SELECT * FROM vendas;
-    """)
-    vendas = cursor.fetchall()
+	def ver_vendas_de_um_dia(self) -> None:
+	    """
+	    Solicita ao usuário que insira um dia, mês e ano. Em seguida, recupera todos os registros da tabela 'vendas'
+	    que têm a data especificada e os imprime.
+	    :param self:
+	    :return:
+	    """
+	    total = 0
+	    dia = input('Digite o dia: ')
+	    mes = input('Digite o mês: ')
+	    ano = input('Digite o ano: ')
+	    data = f'{ano}-{mes}-{dia}'
 
-    print(f'{"-"*160}\n{"VENDAS REALIZADAS":^160}\n{"-"*160}')
-    print(f'{"ID":4} | {"NOME":20} | {"QUANTIDADE":10} | {"VALOR":5} | {"TOTAL":5} | {"DATA":10} | {"HORA"}')
-    print(f'{"-"*160}')
-    for venda in vendas:
-        print(f'{venda[0]:4} | {venda[1]:20} | {venda[2]:10} | {venda[3]:5} | {venda[4]:5} | {venda[5]:10} | {venda[6]}')
-        total += venda[4]
-    print(f'O total vendido R${total:.2f}')
+	    self.cursor.execute("""
+	    SELECT * FROM vendas WHERE data = ?;
+	    """, (data,))
+	    vendas = self.cursor.fetchall()
 
-def log(user, action):
-    date_now = datetime.now().date()
-    time_now = datetime.now().time()
-    data = ''
+	    print(f'{"-"*160}\n{"VENDAS DO DIA":^160}\n{"-"*160}')
+	    print(f'{"ID":4} | {"NOME":20} | {"QUANTIDADE":10} | {"VALOR":5} | {"TOTAL":5} | {"DATA":10} | {"HORA"}')
+	    print(f'{"-"*160}')
+	    for venda in vendas:
+	        print(f'{venda[0]:4} | {venda[1]:20} | {venda[2]:10} | {venda[3]:5} | {venda[4]:5} | {venda[5]:10} | {venda[6]}')
+	        total += venda[4]
+	    print(f'O total vendido R${total:.2f}')
 
-    data += user + '|'
-    data += str(date_now.strftime('%A')) + '|'
-    data += str(date_now.strftime('%d/%m/%Y')) + '|'
-    data += str(time_now)[:8] + '|\n'
-    data += '\t-> ' + action + '\n'
-    with open("database/log.txt", 'a') as file:
-        file.write(data)
+
+	def ver_vendas(self) -> None:
+	    """
+	    Recupera todos os registros da tabela 'vendas' e os imprime.
+	    :param self:
+	    :return:
+	    """
+	    total = 0
+	    self.cursor.execute("""
+	    SELECT * FROM vendas;
+	    """)
+	    vendas = self.cursor.fetchall()
+
+	    print(f'{"-"*160}\n{"VENDAS REALIZADAS":^160}\n{"-"*160}')
+	    print(f'{"ID":4} | {"NOME":20} | {"QUANTIDADE":10} | {"VALOR":5} | {"TOTAL":5} | {"DATA":10} | {"HORA"}')
+	    print(f'{"-"*160}')
+	    for venda in vendas:
+	        print(f'{venda[0]:4} | {venda[1]:20} | {venda[2]:10} | {venda[3]:5} | {venda[4]:5} | {venda[5]:10} | {venda[6]}')
+	        total += venda[4]
+	    print(f'O total vendido R${total:.2f}')
 
 
 def menu():
@@ -165,43 +179,45 @@ def menu():
 1 - CADASTRAR FUNCIONÁRIO 
 2 - ATUALIZAR CADASTRO
 3 - VER FUNCIONÁRIOS
-4 - DEMITIR FUNÁRIOS
+4 - DEMITIR FUNCIONÁRIOS
 5 - SAIR\n{"-"*160}
     """)
 
 
 def sistema_adm():
-    conn = sqlite3.connect('database/gerentia.db')
-    cursor = conn.cursor()
-    continuar = True
-    while continuar:
-        menu()
-	opcao = int(input('Escolha a opção desejada: '))
+	conn = sqlite3.connect('database/gerentia.db')
+	cursor = conn.cursor()
+	BD = BD_Funcionarios(cursor)
 
-        if opcao == 1:
-            cadastrar_funcionario(cursor)
-        elif opcao == 2:
-            alterar_dados(cursor)
-        elif opcao == 3:
-            mostrar_funcionarios(cursor)
-        elif opcao == 4:
-            demitir_funcionario(cursor)
-        elif opcao == 5:
-            log('usuario', 'saiu do sistema')
-            continuar = False
-        else:
-            print('ERRO! Opção inválida.')
+	continuar = True
+	while continuar:
+		menu()
+		opcao = int(input('Escolha a opção desejada: '))
 
-        conn.commit()
-    conn.close()
-    limpar_a_tela()
+		if opcao == 1:
+			BD.cadastrar_funcionario()
+		elif opcao == 2:
+            		BD.alterar_dados()
+		elif opcao == 3:
+			BD.mostrar_funcionarios()
+		elif opcao == 4:
+			BD.demitir_funcionario()
+		elif opcao == 5:
+			BD.log('usuario', 'saiu do sistema')
+			continuar = False
+		else:
+			print('ERRO! Opção inválida.')
 
-    print('ENCERRANDO PROGRAMA.', end='')
-    sleep(1)
-    print('.', end='')
-    sleep(1)
-    print('.', end='')
-    sleep(1)
-    print('.')
-    limpar_a_tela()
-    print(f'{"-"*160}\n{"PROGRAMA ENCERRADO"}\n{"-"*160}')
+	conn.commit()
+	conn.close()
+	limpar_a_tela()
+
+	print('ENCERRANDO PROGRAMA.', end='')
+	sleep(1)
+	print('.', end='')
+	sleep(1)
+	print('.', end='')
+	sleep(1)
+	print('.')
+	limpar_a_tela()
+	print(f'{"-"*160}\n{"PROGRAMA ENCERRADO"}\n{"-"*160}')
