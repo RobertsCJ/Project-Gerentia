@@ -55,7 +55,7 @@ class Funcionario:
 		self.senha = senha
 class BD_Funcionarios:
 	def __init__(self, cursor):
-		self.cursor = cursor
+	self.cursor = cursor
 
 	def cadastrar_funcionario(self):
 		"""
