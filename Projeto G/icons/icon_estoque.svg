@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+
+<svg
+   width="18.040009"
+   height="18.039999"
+   viewBox="0 0 0.54120026 0.54119997"
+   fill="none"
+   version="1.1"
+   id="svg3"
+   sodipodi:docname="burger-menu-svgrepo-com.svg"
+   inkscape:export-filename="icon_menu.svg"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xml:space="preserve"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+     id="defs3" /><sodipodi:namedview
+     id="namedview3"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:export-bgcolor="#ffffff00" /><g
+     style="fill:none"
+     id="g4"
+     transform="matrix(0.0225,0,0,0.0225,0.00453848,-0.00756215)"><path
+       fill-rule="evenodd"
+       clip-rule="evenodd"
+       d="M 1,0 C 1.55228,0 2,0.447715 2,1 V 8 H 5 C 4.44772,8 4,7.55228 4,7 V 5 C 4,4.44772 4.44772,4 5,4 h 4 c 0.55228,0 1,0.44772 1,1 V 7 C 10,7.55228 9.55228,8 9,8 h 4 C 12.4477,8 12,7.55228 12,7 V 3 c 0,-0.55228 0.4477,-1 1,-1 h 6 c 0.5523,0 1,0.44772 1,1 v 4 c 0,0.55228 -0.4477,1 -1,1 h 3 V 1 c 0,-0.552285 0.4477,-1 1,-1 0.5523,0 1,0.447715 1,1 v 22 c 0,0.5523 -0.4477,1 -1,1 -0.5523,0 -1,-0.4477 -1,-1 V 22 H 2 v 1 C 2,23.5523 1.55228,24 1,24 0.447715,24 0,23.5523 0,23 V 1 C 0,0.447715 0.447715,0 1,0 Z m 21,20 h -3 c 0.5523,0 1,-0.4477 1,-1 v -4 c 0,-0.5523 -0.4477,-1 -1,-1 h -5 c -0.5523,0 -1,0.4477 -1,1 v 4 c 0,0.5523 0.4477,1 1,1 h -4 c 0.5523,0 1,-0.4477 1,-1 v -6 c 0,-0.5523 -0.4477,-1 -1,-1 H 5 c -0.55228,0 -1,0.4477 -1,1 v 6 c 0,0.5523 0.44772,1 1,1 H 2 V 10 h 20 z"
+       fill="#758ca3"
+       id="path1"
+       clip-path="url(#clipPath2)" /></g></svg>
