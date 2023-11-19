@@ -54,6 +54,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.mostrar_produtos()
         ###########################################################################################
 
+        ###########################################################################################
+        # AÇÃO PARA OS BTS DE CONFIGURAÇÕES
+        self.btn_cadUsuario.clicked.connect(self.cadastrar_usuario)
+        self.btn_removerFunci.clicked.connect(self.remover_usuario)
+        ###########################################################################################
+
         # MOSTRANDO A JANELA
         self.show()
 
@@ -76,6 +82,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # INICIANDO ANIMAÇÃO
         self.animacao.start()
     
+    ####################################################################################################
+    # FUNÇÕES PARA OS PRODUTOS
     def adicinar_produtos(self):
         try:
             cod = str(uuid.uuid4())
@@ -231,6 +239,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             msg.setText("O produto informado, não foi localizado!")
             msg.exec()
 
+    ####################################################################################################
+
+    ####################################################################################################
+    # FUNÇÕES PARA OS FUNCIOONÁRIOS
+    def cadastrar_usuario(self):
+        print("OK")
+
+    def remover_usuario(self):
+        print("OK - 2")
+    ####################################################################################################
 
             
 if __name__ == "__main__":
