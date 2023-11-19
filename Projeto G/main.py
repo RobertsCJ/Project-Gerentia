@@ -243,17 +243,38 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     ####################################################################################################
     # FUNÇÕES PARA OS FUNCIOONÁRIOS
-    def cadastrar_usuario(self):
-        usuario = str(self.txt_cUsuario.text().strip())
-        senha = str(self.txt_cSenha.text().strip())
-        confirma_senha = str(self.txt_cConfiSenha.text().strip())
-        print(f"{usuario} | {senha} | {confirma_senha}")
-
+    def limpa_lineEdit(self):
         self.txt_cUsuario.clear()
         self.txt_cSenha.clear()
         self.txt_cConfiSenha.clear()
-        if senha == confirma_senha:
-            pass
+
+    def cadastrar_usuario(self):
+        usuario = str(self.txt_cUsuario.text())
+        senha = str(self.txt_cSenha.text())
+        confirma_senha = str(self.txt_cConfiSenha.text())
+        
+        self.limpa_lineEdit()
+
+        if usuario == "" or senha == "" or confirma_senha == "":
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Warning)
+            msg.setWindowTitle("Erro!")
+            msg.setText("Não foi possível cadastrar o usuário.\nPor favor, preencha todos os campos!")
+            msg.exec()
+            return -1
+        
+        if senha != confirma_senha:
+            return -1
+        
+        else:
+            nome_funcionario, nome_ok = QInputDialog.getText(None, 'IDENTIFICAÇÃO DO FUNCIONÁRIO', 'Nome do funcionário:')
+            if nome_ok:
+                cargos = ["ADMINISTRADOR", "VENDEDOR", "ESTOQUE"]
+                cargo, cargo_ok = QInputDialog.getItem(None, "CARGOS", "Qual será o cargo?", cargos, 0, False)
+                
+                if not cargo_ok:
+                    return -1
+                    
 
     def remover_usuario(self):
         print("OK - 2")
