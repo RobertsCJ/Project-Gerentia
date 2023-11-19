@@ -244,7 +244,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     ####################################################################################################
     # FUNÇÕES PARA OS FUNCIOONÁRIOS
     def cadastrar_usuario(self):
-        print("OK")
+        usuario = str(self.txt_cUsuario.text().strip())
+        senha = str(self.txt_cSenha.text().strip())
+        confirma_senha = str(self.txt_cConfiSenha.text().strip())
+        print(f"{usuario} | {senha} | {confirma_senha}")
+
+        self.txt_cUsuario.clear()
+        self.txt_cSenha.clear()
+        self.txt_cConfiSenha.clear()
+        if senha == confirma_senha:
+            pass
 
     def remover_usuario(self):
         print("OK - 2")
