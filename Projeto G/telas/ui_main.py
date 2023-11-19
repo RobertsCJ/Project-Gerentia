@@ -298,6 +298,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_7.setObjectName(u"verticalLayout_7")
         self.paginas = QStackedWidget(self.frame_conteudo)
         self.paginas.setObjectName(u"paginas")
+        self.paginas.setMinimumSize(QSize(700, 540))
         self.pg_home = QWidget()
         self.pg_home.setObjectName(u"pg_home")
         self.verticalLayout_8 = QVBoxLayout(self.pg_home)
@@ -780,90 +781,177 @@ class Ui_MainWindow(object):
         self.paginas.addWidget(self.pg_contatos)
         self.pg_configuracoes = QWidget()
         self.pg_configuracoes.setObjectName(u"pg_configuracoes")
-        self.verticalLayout_16 = QVBoxLayout(self.pg_configuracoes)
+        self.verticalLayout_17 = QVBoxLayout(self.pg_configuracoes)
+        self.verticalLayout_17.setObjectName(u"verticalLayout_17")
+        self.verticalLayout_16 = QVBoxLayout()
         self.verticalLayout_16.setObjectName(u"verticalLayout_16")
         self.label_32 = QLabel(self.pg_configuracoes)
         self.label_32.setObjectName(u"label_32")
 
         self.verticalLayout_16.addWidget(self.label_32)
 
+        self.label_41 = QLabel(self.pg_configuracoes)
+        self.label_41.setObjectName(u"label_41")
+
+        self.verticalLayout_16.addWidget(self.label_41)
+
         self.horizontalLayout_12 = QHBoxLayout()
         self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
-        self.frame_7 = QFrame(self.pg_configuracoes)
-        self.frame_7.setObjectName(u"frame_7")
-        self.frame_7.setStyleSheet(u"")
-        self.frame_7.setFrameShape(QFrame.StyledPanel)
-        self.frame_7.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_14 = QHBoxLayout(self.frame_7)
-        self.horizontalLayout_14.setObjectName(u"horizontalLayout_14")
-        self.frame_6 = QFrame(self.frame_7)
-        self.frame_6.setObjectName(u"frame_6")
-        self.frame_6.setStyleSheet(u"QLineEdit{\n"
-"background-color: white;\n"
-"border-radius: 15px;\n"
+        self.frame_config = QFrame(self.pg_configuracoes)
+        self.frame_config.setObjectName(u"frame_config")
+        self.frame_config.setStyleSheet(u"QLineEdit{background-color: white;\n"
+"border-radius: 5px;\n"
 "}\n"
-"QPushButton{\n"
-"background-color: white;\n"
+"QPushButton{background-color: white;\n"
 "border-radius: 15px;\n"
+"font: 700;\n"
+"}\n"
+"QPushButton:hover{background-color: red;\n"
+"color: white;\n"
+"}\n"
+"QPushButton:pressed{background-color: black;\n"
+"color: white;\n"
 "}")
-        self.frame_6.setFrameShape(QFrame.StyledPanel)
-        self.frame_6.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_18 = QVBoxLayout(self.frame_6)
+        self.frame_config.setFrameShape(QFrame.StyledPanel)
+        self.frame_config.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_13 = QHBoxLayout(self.frame_config)
+        self.horizontalLayout_13.setObjectName(u"horizontalLayout_13")
+        self.verticalLayout_19 = QVBoxLayout()
+        self.verticalLayout_19.setObjectName(u"verticalLayout_19")
+        self.label_38 = QLabel(self.frame_config)
+        self.label_38.setObjectName(u"label_38")
+
+        self.verticalLayout_19.addWidget(self.label_38)
+
+        self.gridLayout_3 = QGridLayout()
+        self.gridLayout_3.setObjectName(u"gridLayout_3")
+        self.label_39 = QLabel(self.frame_config)
+        self.label_39.setObjectName(u"label_39")
+
+        self.gridLayout_3.addWidget(self.label_39, 0, 0, 1, 1)
+
+        self.txt_matricula = QLineEdit(self.frame_config)
+        self.txt_matricula.setObjectName(u"txt_matricula")
+        self.txt_matricula.setMinimumSize(QSize(0, 25))
+        self.txt_matricula.setMaximumSize(QSize(16777215, 25))
+        self.txt_matricula.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_3.addWidget(self.txt_matricula, 1, 0, 1, 1)
+
+        self.label_40 = QLabel(self.frame_config)
+        self.label_40.setObjectName(u"label_40")
+
+        self.gridLayout_3.addWidget(self.label_40, 2, 0, 1, 1)
+
+        self.txt_nomeFunci = QLineEdit(self.frame_config)
+        self.txt_nomeFunci.setObjectName(u"txt_nomeFunci")
+        self.txt_nomeFunci.setMinimumSize(QSize(0, 25))
+        self.txt_nomeFunci.setMaximumSize(QSize(16777215, 25))
+        self.txt_nomeFunci.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_3.addWidget(self.txt_nomeFunci, 3, 0, 1, 1)
+
+
+        self.verticalLayout_19.addLayout(self.gridLayout_3)
+
+        self.btn_removerFunci = QPushButton(self.frame_config)
+        self.btn_removerFunci.setObjectName(u"btn_removerFunci")
+        self.btn_removerFunci.setMinimumSize(QSize(100, 30))
+        self.btn_removerFunci.setMaximumSize(QSize(100, 30))
+
+        self.verticalLayout_19.addWidget(self.btn_removerFunci, 0, Qt.AlignHCenter)
+
+
+        self.horizontalLayout_13.addLayout(self.verticalLayout_19)
+
+
+        self.horizontalLayout_12.addWidget(self.frame_config)
+
+        self.frame_usuarios = QFrame(self.pg_configuracoes)
+        self.frame_usuarios.setObjectName(u"frame_usuarios")
+        self.frame_usuarios.setStyleSheet(u"QLineEdit{background-color: white;\n"
+"border-radius: 5px;\n"
+"}\n"
+"QPushButton{background-color: white;\n"
+"border-radius: 15px;\n"
+"font: 700;\n"
+"}\n"
+"QPushButton:hover{background-color: #479bd8;}\n"
+"QPushButton:pressed{background-color: blue;\n"
+"color: white;\n"
+"}")
+        self.frame_usuarios.setFrameShape(QFrame.StyledPanel)
+        self.frame_usuarios.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_14 = QHBoxLayout(self.frame_usuarios)
+        self.horizontalLayout_14.setObjectName(u"horizontalLayout_14")
+        self.verticalLayout_18 = QVBoxLayout()
         self.verticalLayout_18.setObjectName(u"verticalLayout_18")
-        self.verticalLayout_17 = QVBoxLayout()
-        self.verticalLayout_17.setObjectName(u"verticalLayout_17")
-        self.label_34 = QLabel(self.frame_6)
+        self.label_34 = QLabel(self.frame_usuarios)
         self.label_34.setObjectName(u"label_34")
 
-        self.verticalLayout_17.addWidget(self.label_34)
+        self.verticalLayout_18.addWidget(self.label_34)
 
-        self.horizontalLayout_13 = QHBoxLayout()
-        self.horizontalLayout_13.setObjectName(u"horizontalLayout_13")
-        self.txt_agendar = QLineEdit(self.frame_6)
-        self.txt_agendar.setObjectName(u"txt_agendar")
-        self.txt_agendar.setMinimumSize(QSize(0, 30))
-        self.txt_agendar.setAlignment(Qt.AlignCenter)
-
-        self.horizontalLayout_13.addWidget(self.txt_agendar)
-
-        self.btn_agendar = QPushButton(self.frame_6)
-        self.btn_agendar.setObjectName(u"btn_agendar")
-        self.btn_agendar.setMinimumSize(QSize(100, 30))
-        self.btn_agendar.setCursor(QCursor(Qt.PointingHandCursor))
-        self.btn_agendar.setStyleSheet(u"QPushButton:hover{\n"
-"color: white;\n"
-"background-color: #00aaff;\n"
-"}\n"
-"QPushButton:pressed{\n"
-"color: black;\n"
-"background-color: white;\n"
-"}")
-
-        self.horizontalLayout_13.addWidget(self.btn_agendar)
-
-
-        self.verticalLayout_17.addLayout(self.horizontalLayout_13)
-
-
-        self.verticalLayout_18.addLayout(self.verticalLayout_17)
-
-        self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
-        self.verticalLayout_18.addItem(self.verticalSpacer_5)
-
-
-        self.horizontalLayout_14.addWidget(self.frame_6)
-
-        self.label_35 = QLabel(self.frame_7)
+        self.gridLayout_2 = QGridLayout()
+        self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.label_35 = QLabel(self.frame_usuarios)
         self.label_35.setObjectName(u"label_35")
 
-        self.horizontalLayout_14.addWidget(self.label_35)
+        self.gridLayout_2.addWidget(self.label_35, 0, 0, 1, 1)
+
+        self.txt_cUsuario = QLineEdit(self.frame_usuarios)
+        self.txt_cUsuario.setObjectName(u"txt_cUsuario")
+        self.txt_cUsuario.setMinimumSize(QSize(0, 25))
+        self.txt_cUsuario.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_2.addWidget(self.txt_cUsuario, 1, 0, 1, 1)
+
+        self.label_36 = QLabel(self.frame_usuarios)
+        self.label_36.setObjectName(u"label_36")
+
+        self.gridLayout_2.addWidget(self.label_36, 2, 0, 1, 1)
+
+        self.txt_cSenha = QLineEdit(self.frame_usuarios)
+        self.txt_cSenha.setObjectName(u"txt_cSenha")
+        self.txt_cSenha.setMinimumSize(QSize(0, 25))
+        self.txt_cSenha.setEchoMode(QLineEdit.Password)
+        self.txt_cSenha.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_2.addWidget(self.txt_cSenha, 3, 0, 1, 1)
+
+        self.label_37 = QLabel(self.frame_usuarios)
+        self.label_37.setObjectName(u"label_37")
+
+        self.gridLayout_2.addWidget(self.label_37, 4, 0, 1, 1)
+
+        self.txt_cConfiSenha = QLineEdit(self.frame_usuarios)
+        self.txt_cConfiSenha.setObjectName(u"txt_cConfiSenha")
+        self.txt_cConfiSenha.setMinimumSize(QSize(0, 25))
+        self.txt_cConfiSenha.setEchoMode(QLineEdit.Password)
+        self.txt_cConfiSenha.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout_2.addWidget(self.txt_cConfiSenha, 5, 0, 1, 1)
 
 
-        self.horizontalLayout_12.addWidget(self.frame_7)
+        self.verticalLayout_18.addLayout(self.gridLayout_2)
+
+        self.btn_cadUsuario = QPushButton(self.frame_usuarios)
+        self.btn_cadUsuario.setObjectName(u"btn_cadUsuario")
+        self.btn_cadUsuario.setMinimumSize(QSize(100, 30))
+        self.btn_cadUsuario.setMaximumSize(QSize(100, 30))
+
+        self.verticalLayout_18.addWidget(self.btn_cadUsuario, 0, Qt.AlignHCenter)
+
+
+        self.horizontalLayout_14.addLayout(self.verticalLayout_18)
+
+
+        self.horizontalLayout_12.addWidget(self.frame_usuarios)
 
 
         self.verticalLayout_16.addLayout(self.horizontalLayout_12)
+
+
+        self.verticalLayout_17.addLayout(self.verticalLayout_16)
 
         self.paginas.addWidget(self.pg_configuracoes)
         self.pg_sobre = QWidget()
@@ -1049,11 +1137,22 @@ class Ui_MainWindow(object):
         self.label_20.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><img src=\":/icons/icons/icon_email.ico\"/><span style=\" font-size:18pt; vertical-align:super;\">contato.wallyson@hotmail.com</span></p></body></html>", None))
         self.label_21.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><img src=\":/icons/icons/icon_github.ico\"/><a href=\"https://github.com/WallysonSantos\"><span style=\" font-size:18pt; text-decoration: underline; color:#0078d4; vertical-align:super;\">https://github.com/WallysonSantos</span></a></p></body></html>", None))
         self.label_18.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-family:'-apple-system','Roboto','SegoeUI','Segoe UI','Helvetica Neue','Helvetica','Microsoft YaHei','Meiryo UI','Meiryo','Arial Unicode MS','sans-serif'; font-size:12pt; color:#ffffff; background-color:rgba(255,255,255,0.07451);\">Estamos aqui para ajudar! Entre em contato conosco e responderemos o mais r\u00e1pido poss\u00edvel. Sua satisfa\u00e7\u00e3o \u00e9 nossa prioridade.</span></p></body></html>", None))
-        self.label_32.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><span style=\" font-size:18pt; font-weight:700;\">CONFIGURA\u00c7\u00d5ES</span></p></body></html>", None))
-        self.label_34.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><span style=\" font-weight:700;\">PROGRAMAR RELAT\u00d3RIO AUTOM\u00c1TICO</span></p></body></html>", None))
-        self.txt_agendar.setPlaceholderText(QCoreApplication.translate("MainWindow", u"dd/mm/aaaa", None))
-        self.btn_agendar.setText(QCoreApplication.translate("MainWindow", u"AGENDAR", None))
-        self.label_35.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><span style=\" font-size:16pt; font-weight:700;\">EM CONSTRU\u00c7\u00c3O</span></p><p align=\"center\"><img src=\":/icons/icons/em_desenvolvimento.gif\"/></p></body></html>", None))
+        self.label_32.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><span style=\" font-size:16pt; font-weight:700;\">CONFIGURA\u00c7\u00d5ES</span></p><p align=\"center\"><img src=\":/icons/icons/em_desenvolvimento.gif\"/></p></body></html>", None))
+        self.label_41.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:700;\">A\u00c7\u00d5ES ADICIONAIS</span></p></body></html>", None))
+        self.label_38.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:700;\">REMOVER UM USU\u00c1RIO</span></p></body></html>", None))
+        self.label_39.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-weight:700;\">MATR\u00cdCULA</span></p></body></html>", None))
+        self.txt_matricula.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Matr\u00edcula do funcion\u00e1rio", None))
+        self.label_40.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-weight:700;\">USU\u00c1RIO</span></p></body></html>", None))
+        self.txt_nomeFunci.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Nome do funcion\u00e1rio", None))
+        self.btn_removerFunci.setText(QCoreApplication.translate("MainWindow", u"REMOVER", None))
+        self.label_34.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:700;\">ADICONAR UM NOVO USU\u00c1RIO</span></p></body></html>", None))
+        self.label_35.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-weight:700;\">USU\u00c1RIO</span></p></body></html>", None))
+        self.txt_cUsuario.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Nome de usu\u00e1rio", None))
+        self.label_36.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-weight:700;\">SENHA</span></p></body></html>", None))
+        self.txt_cSenha.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Senha", None))
+        self.label_37.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-weight:700;\">CONFIRMA\u00c7\u00c3O DE SENHA</span></p></body></html>", None))
+        self.txt_cConfiSenha.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Confirme sua senha", None))
+        self.btn_cadUsuario.setText(QCoreApplication.translate("MainWindow", u"CADASTRAR", None))
         self.label_28.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><span style=\" font-size:18pt; font-weight:700;\">SOBRE</span></p></body></html>", None))
         self.label_30.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><img src=\":/icons/icons/icon_sqlite.ico\"/></p></body></html>", None))
         self.label_31.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><img src=\":/icons/icons/icon_python.ico\"/></p></body></html>", None))
