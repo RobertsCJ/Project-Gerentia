@@ -10,8 +10,8 @@ from PySide6.QtCore import *
 from PySide6.QtWidgets import *
 from PySide6.QtGui import *
 import sys
-from ui_main import Ui_MainWindow
-from database import DB_Gerentia
+from telas.ui_main import Ui_MainWindow
+from database.database import DB_Gerentia
 import uuid
 from datetime import *
 import sqlite3
