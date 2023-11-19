@@ -100,3 +100,31 @@ class DB_Gerentia:
             print(f"Ocorreu um erro ao recuperar produtos: {e}")
             return None
     
+    def criar_tabela_funcionarios(self):
+
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS funcionarios (
+            matricula NOT NULL PRIMARY KEY,
+            nome VARCHAR(100) NOT NULL,
+            cargo VARCHAR(100),
+            nome_usuario VARCHAR(100),
+            senha VARCHAR(25)
+        );
+        """)
+        
+    def cadastrar_usuario(self, dadosUsuario):
+
+        campos_tabela = ('matricula', 'nome', 'cargo', 'nome_usuario', 'senha')
+
+        qntd = ('?,?,?,?,?')
+        cursor = self.conn.cursor()
+
+        try:
+            cursor.execute(f"""
+            INSERT INTO funcionarios {campos_tabela} 
+            VALUES({qntd})""", dadosUsuario)
+            self.conn.commit()
+            return "OK"
+        except:
+            return "Erro"
