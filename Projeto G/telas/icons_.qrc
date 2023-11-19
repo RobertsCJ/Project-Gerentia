@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="icons-login">
+    <file>icons/fundo_login.png</file>
+  </qresource>
+</RCC>
