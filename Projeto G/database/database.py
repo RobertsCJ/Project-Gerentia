@@ -145,3 +145,22 @@ class DB_Gerentia:
         except Exception as e:
             print(e)
             return "Erro ao excluir registro!"
+        
+    def adicionar_admin_padrao(self):
+        try:
+            cursor = self.conn.cursor()
+            # Verifica se o administrador padrão já existe
+            cursor.execute("SELECT matricula FROM funcionarios WHERE matricula = 'admin'")
+            result = cursor.fetchone()
+            # Se o administrador padrão não existir, o sistema adiciona
+            if result is None:
+                cursor.execute("""
+                    INSERT INTO funcionarios (matricula, nome, cargo, nome_usuario, senha) 
+                    VALUES ('admin', 'Admin', 'Administrador', 'admin', 'admin123')
+                """)
+                self.conn.commit()
+                print("Administrador padrão adicionado com sucesso!")
+            else:
+                print("O administrador padrão já existe.")
+        except Exception as e:
+            print(e)

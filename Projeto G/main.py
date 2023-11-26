@@ -358,6 +358,7 @@ if __name__ == "__main__":
     db.conexao()
     db.criar_tabela()
     db.criar_tabela_funcionarios()
+    db.adicionar_admin_padrao()
     db.fechar_conexao()
 
     app = QApplication(sys.argv)
