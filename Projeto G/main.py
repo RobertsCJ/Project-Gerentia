@@ -320,7 +320,36 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     
 
     def remover_usuario(self):
-        print("OK - 2")
+        db = DB_Gerentia()
+        db.conexao()
+
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setWindowTitle("Remover Funcionário")
+        msg.setText("O funcionário será excluído do sistema.")
+        msg.setInformativeText("Tem certeza que deseja remove-lo?")
+        msg.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+
+        # ALTERAR TEXTO PADRÃO DOS BOTÕES
+        msg.button(QMessageBox.StandardButton.Yes).setText("Sim")
+        msg.button(QMessageBox.StandardButton.No).setText("Não")
+        resposta = msg.exec()
+
+        if resposta == QMessageBox.Yes:
+            matricula = self.txt_matricula.text().strip()
+            nome = self.txt_nomeFunci.text().strip()
+            self.txt_matricula.clear()
+            self.txt_nomeFunci.clear()
+            resultado = db.remover_funcionario(matricula, nome)
+
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Information)
+            msg.setWindowTitle("Usuário")
+            msg.setText(resultado)
+            msg.exec()
+
+        db.fechar_conexao()
+
     ####################################################################################################
 
             

@@ -128,3 +128,20 @@ class DB_Gerentia:
             return "OK"
         except:
             return "Erro"
+        
+    def remover_funcionario(self, matricula, nome):
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute(f"SELECT nome FROM funcionarios WHERE matricula = '{matricula}'")
+            result = cursor.fetchone()
+            if result is None:
+                return "Matrícula não encontrada!"
+            elif result[0] != nome:
+                return f"O nome não corresponde à matrícula! O nome da matrícula é {result[0]} e não {nome}."
+            else:
+                cursor.execute(f"DELETE FROM funcionarios WHERE matricula = '{matricula}'")
+                self.conn.commit()
+                return "Usuário excluído com sucesso!"
+        except Exception as e:
+            print(e)
+            return "Erro ao excluir registro!"
