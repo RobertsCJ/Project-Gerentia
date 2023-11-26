@@ -6,17 +6,9 @@
 #
 ###################################################
 from typing import Optional
-from PySide6.QtCore import *
-from PySide6.QtWidgets import *
-from PySide6.QtGui import *
-import sys
 from telas.ui_main import Ui_MainWindow
 from database.database import DB_Gerentia
-import uuid
-from datetime import *
-import sqlite3
-import pandas
-import secrets
+from importacoes import *
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -85,6 +77,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
     ####################################################################################################
     # FUNÇÕES PARA OS PRODUTOS
+    def limpar_area_cadastro(self):
+        self.txt_nome.clear()
+        self.txt_descricao.clear()
+        self.txt_quantidade.clear()
+        self.txt_pCompra.clear()
+        self.txt_pVenda.clear()
+
     def adicinar_produtos(self):
         try:
             cod = str(uuid.uuid4())
@@ -110,6 +109,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         resposta = db.cadastrar_produto(dadosProduto)
 
         if resposta == "OK":
+            self.limpar_area_cadastro()
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Information)
             msg.setWindowTitle("Cadastro Realizado")
