@@ -1,10 +1,10 @@
-###################################################
+######################################################################
 #
 # POR: WALLYSON S. SOUZA, ROBERTO CARLOS e JONATAS N. FREITAS
 # PROJETO DESENVOLVIDO COM: Qt Designer e PySide6
 # V: 1.0.0
 #
-###################################################
+#####################################################################
 from typing import Optional
 from telas.ui_main import Ui_MainWindow
 from database.database import DB_Gerentia
