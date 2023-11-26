@@ -16,6 +16,7 @@ import uuid
 from datetime import *
 import sqlite3
 import pandas
+import secrets
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -56,7 +57,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         ###########################################################################################
         # AÇÃO PARA OS BTS DE CONFIGURAÇÕES
-        self.btn_cadUsuario.clicked.connect(self.cadastrar_usuario)
+        self.btn_cadUsuario.clicked.connect(self.cadastro_de_usuario)
         self.btn_removerFunci.clicked.connect(self.remover_usuario)
         ###########################################################################################
 
@@ -248,22 +249,27 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.txt_cSenha.clear()
         self.txt_cConfiSenha.clear()
 
-    def cadastrar_usuario(self):
-        usuario = str(self.txt_cUsuario.text())
-        senha = str(self.txt_cSenha.text())
-        confirma_senha = str(self.txt_cConfiSenha.text())
+    def cadastro_de_usuario(self):
+        usuario = str(self.txt_cUsuario.text().strip())
+        senha = str(self.txt_cSenha.text().strip())
+        confirma_senha = str(self.txt_cConfiSenha.text().strip())
         
         self.limpa_lineEdit()
 
         if usuario == "" or senha == "" or confirma_senha == "":
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Warning)
-            msg.setWindowTitle("Erro!")
+            msg.setWindowTitle("Erro de cadastro!")
             msg.setText("Não foi possível cadastrar o usuário.\nPor favor, preencha todos os campos!")
             msg.exec()
             return -1
         
         if senha != confirma_senha:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Warning)
+            msg.setWindowTitle("Aviso!")
+            msg.setText("As senhas não são iguais. Tente novamente!")
+            msg.exec()
             return -1
         
         else:
@@ -272,8 +278,45 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 cargos = ["ADMINISTRADOR", "VENDEDOR", "ESTOQUE"]
                 cargo, cargo_ok = QInputDialog.getItem(None, "CARGOS", "Qual será o cargo?", cargos, 0, False)
                 
-                if not cargo_ok:
+                if cargo_ok:
+                    matricula = secrets.token_hex(5)
+                    dados_funcionario = (matricula, nome_funcionario, cargo, usuario, senha)
+
+                    db = DB_Gerentia()
+                    db.conexao()
+                    resposta = db.cadastrar_usuario(dados_funcionario)
+
+                    if resposta == "OK":
+                        msg = QMessageBox()
+                        msg.setIcon(QMessageBox.Information)
+                        msg.setWindowTitle("Cadastro Realizado")
+                        msg.setText("Cadastro Realizado com sucesso")
+                        msg.exec()
+                        db.fechar_conexao()
+                        self.mostrar_produtos()
+                        return
+                    else:
+                        msg = QMessageBox()
+                        msg.setIcon(QMessageBox.Critical)
+                        msg.setWindowTitle("Erro")
+                        msg.setText("Erro ao cadastrar, verifique se as informações foram preenchidas corretamente!")
+                        msg.exec()
+                        db.fechar_conexao()
+                        return
+
+                else:
+                    msg = QMessageBox()
+                    msg.setIcon(QMessageBox.Warning)
+                    msg.setWindowTitle("Aviso!")
+                    msg.setText("Não foi possível cadastrar o usuário.\nDados insuficientes!")
+                    msg.exec()
                     return -1
+            else:
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Warning)
+                msg.setWindowTitle("Aviso!")
+                msg.setText("Não foi possível cadastrar o usuário.\nDados insuficientes, tente novamente!")
+                msg.exec()
                     
 
     def remover_usuario(self):
@@ -285,6 +328,7 @@ if __name__ == "__main__":
     db = DB_Gerentia()
     db.conexao()
     db.criar_tabela()
+    db.criar_tabela_funcionarios()
     db.fechar_conexao()
 
     app = QApplication(sys.argv)
