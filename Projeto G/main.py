@@ -32,6 +32,9 @@ class Login(QWidget, Ui_Form):
         user = str(self.txt_nomeUser.text().strip())
         senha = str(self.txt_senhaUser.text().strip())
 
+        self.txt_nomeUser.clear()
+        self.txt_senhaUser.clear()
+
         resultado = db.verifica_login(user, senha)
 
         if resultado == "Usuário validado!":
