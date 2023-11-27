@@ -164,3 +164,16 @@ class DB_Gerentia:
                 print("O administrador padrão já existe.")
         except Exception as e:
             print(e)
+
+    def verifica_login(self, usuario, senha):
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute("""SELECT * FROM funcionarios WHERE nome_usuario = ? AND senha = ?""", (usuario, senha))
+
+            usuarios = cursor.fetchall()
+            if len(usuarios) > 0:
+                return "Usuário validado!"
+            else:
+                return "Usuário não inválido!"
+        except Exception as e:
+            return f"Erro! {e}"
