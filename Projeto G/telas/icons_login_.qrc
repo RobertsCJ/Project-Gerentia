@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="icons_login">
+    <file>icons_login/icon_cadeado.ico</file>
+    <file>icons_login/icon_user.ico</file>
+    <file>icons_login/login_btn.ico</file>
+    <file>icons_login/icon_login.ico</file>
+  </qresource>
+</RCC>
