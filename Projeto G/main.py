@@ -6,9 +6,48 @@
 #
 #####################################################################
 from typing import Optional
+
+import PySide6.QtCore
+import PySide6.QtWidgets
 from telas.ui_main import Ui_MainWindow
+from telas.ui_login import Ui_Form
 from database.database import DB_Gerentia
 from importacoes import *
+
+
+class Login(QWidget, Ui_Form):
+    def __init__(self) -> None:
+        super(Login, self).__init__()
+        self.setupUi(self)
+        self.setWindowTitle("Gerentia - Login do sistema")
+
+        self.btn_login.clicked.connect(self.abrir_sistema)
+
+        self.tentativas = 0
+    
+    def abrir_sistema(self):
+
+        db = DB_Gerentia()
+        db.conexao()
+        user = str(self.txt_nomeUser.text().strip())
+        senha = str(self.txt_senhaUser.text().strip())
+
+        resultado = db.verifica_login(user, senha)
+
+        if resultado == "Usuário validado!":
+            self.w = MainWindow()
+            self.close()
+        else:
+            if self.tentativas < 3:
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Warning)
+                msg.setWindowTitle("Erro ao logar")
+                msg.setText(f"Usuário ou senha inválodos!\n\nTentativa: {self.tentativas+1} de 3.")
+                msg.exec()
+                self.tentativas += 1
+
+            if self.tentativas == 3:
+                sys.exit(0)
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -362,5 +401,6 @@ if __name__ == "__main__":
     db.fechar_conexao()
 
     app = QApplication(sys.argv)
-    window = MainWindow()
+    window = Login()
+    window.show()
     app.exec()
