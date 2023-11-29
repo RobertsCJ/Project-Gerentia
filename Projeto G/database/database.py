@@ -59,14 +59,14 @@ class DB_Gerentia:
     def mostrar_produtos(self):
         try:
             cursor = self.conn.cursor()
-            cursor.execute("SELECT * FROM tb_estoque")
+            cursor.execute("SELECT * FROM tb_estoque WHERE status != 2")
             estoque = cursor.fetchall()
             return estoque
         except Exception as e:
             print(f"Ocorreu um erro ao recuperar produtos: {e}")
             return None
 
-    def excluir_estoque(self, cod):
+    def excluir_estoque_permanentemente(self, cod):
         try:
             cursor = self.conn.cursor()
             cursor.execute(f"DELETE FROM tb_estoque WHERE cod = '{cod}'")
@@ -74,6 +74,16 @@ class DB_Gerentia:
             return "Cadastro excluído com sucesso!"
         except:
             return "Erro ao excluir registro!"
+
+    def excluir_estoque_pelo_status(self, cod):
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute(f" UPDATE tb_estoque SET status = 2 WHERE cod = '{cod}'")
+            self.conn.commit()
+            return "Cadastro excluído com sucesso!"
+        except:
+            return "Erro ao excluir registro!"
+
 
     def alterar_produto(self, dadosProduto):
 
@@ -105,7 +115,7 @@ class DB_Gerentia:
         try:
             cursor = self.conn.cursor()
             # Usando o operador LIKE para pesquisa insensível a maiúsculas e minúsculas
-            cursor.execute("SELECT * FROM tb_estoque WHERE nome LIKE ? OR descricao LIKE ?",
+            cursor.execute("SELECT * FROM tb_estoque WHERE (nome LIKE ? OR descricao LIKE ?) and status != 2",
                            ('%' + pesquisa + '%', '%' + pesquisa + '%'))
             produtos = cursor.fetchall()
             return produtos

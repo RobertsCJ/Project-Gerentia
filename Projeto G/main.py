@@ -331,14 +331,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if resposta == QMessageBox.Yes:
             cod_barras = self.tb_estoque.selectionModel().currentIndex().siblingAtColumn(0).data()
             try:
-                resultado = db.excluir_estoque(cod_barras)
+                resultado = db.excluir_estoque_pelo_status(cod_barras)
             except Exception as err:
                 print(f'ERROR DB: {err}')
             else:
                 request = {"cod": cod_barras, "status": 2, "sincronizado": 0}
                 resp = self.sincronizar_estoque_sevidor(request)
                 if resp == 1:
-                    db.atualizar_sincronizado(cod_barras)
+                    db.excluir_estoque_permanentemente(cod_barras)
                 else:
                     print(f"API_ERROR: {resp}")
 
