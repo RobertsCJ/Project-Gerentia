@@ -7,6 +7,8 @@
 #####################################################################
 from typing import Optional
 
+import requests
+
 import PySide6.QtCore
 import PySide6.QtWidgets
 from telas.ui_main import Ui_MainWindow
@@ -24,7 +26,7 @@ class Login(QWidget, Ui_Form):
         self.btn_login.clicked.connect(self.abrir_sistema)
 
         self.tentativas = 0
-    
+
     def abrir_sistema(self):
 
         db = DB_Gerentia()
@@ -35,7 +37,7 @@ class Login(QWidget, Ui_Form):
         self.txt_nomeUser.clear()
         self.txt_senhaUser.clear()
 
-        resultado = db.verifica_login(user, senha)
+        resultado = db.verificar_login(user, senha)
 
         if resultado == "Usuário validado!":
             self.w = MainWindow()
@@ -45,7 +47,8 @@ class Login(QWidget, Ui_Form):
                 msg = QMessageBox()
                 msg.setIcon(QMessageBox.Warning)
                 msg.setWindowTitle("Erro ao logar")
-                msg.setText(f"Usuário ou senha inválodos!\n\nTentativa: {self.tentativas+1} de 3.")
+                msg.setText(
+                    f"Usuário ou senha inválodos!\n\nTentativa: {self.tentativas+1} de 3.")
                 msg.exec()
                 self.tentativas += 1
 
@@ -68,11 +71,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         ###########################################################################################
         # NAVEGAÇÃO ENTRE AS PÁGINAS
-        self.btn_home.clicked.connect(lambda: self.paginas.setCurrentWidget(self.pg_home))
-        self.btn_estoque.clicked.connect(lambda: self.paginas.setCurrentWidget(self.pg_estoque))
-        self.btn_contatos.clicked.connect(lambda: self.paginas.setCurrentWidget(self.pg_contatos))
-        self.btn_configuracoes.clicked.connect(lambda: self.paginas.setCurrentWidget(self.pg_configuracoes))
-        self.btn_sobre.clicked.connect(lambda: self.paginas.setCurrentWidget(self.pg_sobre))
+        self.btn_home.clicked.connect(
+            lambda: self.paginas.setCurrentWidget(self.pg_home))
+        self.btn_estoque.clicked.connect(
+            lambda: self.paginas.setCurrentWidget(self.pg_estoque))
+        self.btn_contatos.clicked.connect(
+            lambda: self.paginas.setCurrentWidget(self.pg_contatos))
+        self.btn_configuracoes.clicked.connect(
+            lambda: self.paginas.setCurrentWidget(self.pg_configuracoes))
+        self.btn_sobre.clicked.connect(
+            lambda: self.paginas.setCurrentWidget(self.pg_sobre))
         ###########################################################################################
 
         ###########################################################################################
@@ -101,14 +109,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def abrir_fechar_menu(self):
         # TAMANHO INICIAL DO MENU
         largura = self.frame_menu_lateral.width()
-        
+
         if largura == 0:
             novoTamanho = 240
         else:
             novoTamanho = 0
 
         # ANIMAÇÃO DO MENU
-        self.animacao = QPropertyAnimation(self.frame_menu_lateral, b"maximumWidth")
+        self.animacao = QPropertyAnimation(
+            self.frame_menu_lateral, b"maximumWidth")
         self.animacao.setDuration(400)
         self.animacao.setStartValue(largura)
         self.animacao.setEndValue(novoTamanho)
@@ -116,9 +125,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.animacao.setEasingCurve(QEasingCurve.InOutQuart)
         # INICIANDO ANIMAÇÃO
         self.animacao.start()
-    
+
     ####################################################################################################
     # FUNÇÕES PARA OS PRODUTOS
+
+    def sincronizar_sevidor(self, request_json):
+        res = requests.post(
+            'http://localhost:8000/api/stock/sinc', json=request_json)
+
+        if res.ok:
+            return True
+
+        return res.json['error']
+
     def limpar_area_cadastro(self):
         self.txt_nome.clear()
         self.txt_descricao.clear()
@@ -136,14 +155,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             preco_venda = float(self.txt_pVenda.text().replace(",", "."))
             data_atual = date.today().strftime('%d/%m/%Y')
             hora_atual = datetime.now().strftime('%H:%M:%S')
-            dadosProduto = (cod, nome, descricao, quantidade, preco_compra, preco_venda, data_atual, hora_atual)
+            dadosProduto = (cod, nome, descricao, quantidade,
+                            preco_compra, preco_venda, data_atual, hora_atual, 0, 0)
         except:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Critical)
             msg.setWindowTitle("Erro")
-            msg.setText("Erro ao cadastrar, verifique se as informações foram preenchidas corretamente!")
+            msg.setText(
+                "Erro ao cadastrar, verifique se as informações foram preenchidas corretamente!")
             msg.exec()
-        
+
         db = DB_Gerentia()
         db.conexao()
 
@@ -157,6 +178,31 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             msg.setWindowTitle("Cadastro Realizado")
             msg.setText("Cadastro Realizado com sucesso")
             msg.exec()
+
+            try:
+                request_json = {
+                    "cod": cod, "nome": nome, "descricao": descricao, "quantidade": quantidade, "preco_compra": preco_compra, "preco_venda": preco_venda, "data_atual": data_atual, "hora_atual": hora_atual, "status": 0, "sincronizado": 0
+                }
+
+                resp = self.sincronizar_sevidor(request_json)
+                if resp == True:
+                    db.atualizar_sincronizado(cod)
+                else:
+                    msg = QMessageBox()
+                    msg.setIcon(QMessageBox.Critical)
+                    msg.setWindowTitle("Erro")
+                    msg.setText(resp)
+                    msg.exec()
+                    db.fechar_conexao()
+
+            except Exception as error:
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Critical)
+                msg.setWindowTitle("Erro")
+                msg.setText(error.args[0])
+                msg.exec()
+                db.fechar_conexao()
+
             db.fechar_conexao()
             self.mostrar_produtos()
             return
@@ -164,7 +210,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Critical)
             msg.setWindowTitle("Erro")
-            msg.setText("Erro ao cadastrar, verifique se as informações foram preenchidas corretamente!")
+            msg.setText(resposta.args[0])
             msg.exec()
             db.fechar_conexao()
             return
@@ -180,7 +226,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         for linhas, infos in enumerate(visualizacao):
             for colunas, dados in enumerate(infos):
-                self.tb_estoque.setItem(linhas, colunas, QTableWidgetItem(str(dados)))
+                self.tb_estoque.setItem(
+                    linhas, colunas, QTableWidgetItem(str(dados)))
         db.fechar_conexao()
 
     def atualizar_produto(self):
@@ -199,6 +246,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         for produto in dados_att:
             db.alterar_produto(tuple(produto))
+            req = {"cod": produto[0], "nome": produto[1], "descricao": produto[2], "quantidade": produto[3], "preco_compra": produto[4],
+                   "preco_venda": produto[5], "data_atual": produto[6], "hora_atual": produto[7], "status": 1, "sincronizado": 0}
+            resp = self.sincronizar_sevidor(req)
+            if resp == True:
+                db.atualizar_sincronizado(req['cod'])
+            else:
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Critical)
+                msg.setWindowTitle("Erro")
+                msg.setText(resp)
+                msg.exec()
+                db.fechar_conexao()
 
         db.fechar_conexao()
 
@@ -220,7 +279,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         msg.setWindowTitle("Excluir Produto")
         msg.setText("O produto será excluído do sistema.")
         msg.setInformativeText("Tem certeza que deseja excluir?")
-        msg.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        msg.setStandardButtons(
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
 
         # ALTERAR TEXTO PADRÃO DOS BOTÕES
         msg.button(QMessageBox.StandardButton.Yes).setText("Sim")
@@ -228,8 +288,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         resposta = msg.exec()
 
         if resposta == QMessageBox.Yes:
-            cod_barras = self.tb_estoque.selectionModel().currentIndex().siblingAtColumn(0).data()
+            cod_barras = self.tb_estoque.selectionModel(
+            ).currentIndex().siblingAtColumn(0).data()
             resultado = db.excluir_estoque(cod_barras)
+            req = {"cod": cod_barras, "status": 2, "sincronizado": 0}
+            resp = self.sincronizar_sevidor(req)
+            if resp == True:
+                db.atualizar_sincronizado(cod_barras)
+            else:
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Critical)
+                msg.setWindowTitle("Erro")
+                msg.setText(resp)
+                msg.exec()
+                db.fechar_conexao()
+
             self.mostrar_produtos()
 
             msg = QMessageBox()
@@ -247,7 +320,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         conn = sqlite3.connect("gerentia.db")
         estoque = pandas.read_sql_query("""SELECT * FROM estoque""", conn)
 
-        estoque.to_excel(excel_writer=f"Relatório do estoque do dia {data_atual} às {hora_atual}.xlsx", sheet_name="Estoque", index=False)
+        estoque.to_excel(
+            excel_writer=f"Relatório do estoque do dia {data_atual} às {hora_atual}.xlsx", sheet_name="Estoque", index=False)
 
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Information)
@@ -257,7 +331,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def pesquisar(self):
         pesquisa = self.txt_pesquisa.text().upper().strip()
-        
+
         db = DB_Gerentia()
         db.conexao()
         produtos = db.mostrar_produto_especifico(pesquisa)
@@ -272,7 +346,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             # PREENCHER A TABELA COM OS DADOS DOS PRODUTOS
             for linhas, infos in enumerate(produtos):
                 for colunas, dados in enumerate(infos):
-                    self.tb_pesquisa.setItem(linhas, colunas, QTableWidgetItem(str(dados)))
+                    self.tb_pesquisa.setItem(
+                        linhas, colunas, QTableWidgetItem(str(dados)))
 
             db.fechar_conexao()
         else:
@@ -295,17 +370,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         usuario = str(self.txt_cUsuario.text().strip())
         senha = str(self.txt_cSenha.text().strip())
         confirma_senha = str(self.txt_cConfiSenha.text().strip())
-        
+
         self.limpa_lineEdit()
 
         if usuario == "" or senha == "" or confirma_senha == "":
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Warning)
             msg.setWindowTitle("Erro de cadastro!")
-            msg.setText("Não foi possível cadastrar o usuário.\nPor favor, preencha todos os campos!")
+            msg.setText(
+                "Não foi possível cadastrar o usuário.\nPor favor, preencha todos os campos!")
             msg.exec()
             return -1
-        
+
         if senha != confirma_senha:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Warning)
@@ -313,16 +389,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             msg.setText("As senhas não são iguais. Tente novamente!")
             msg.exec()
             return -1
-        
+
         else:
-            nome_funcionario, nome_ok = QInputDialog.getText(None, 'IDENTIFICAÇÃO DO FUNCIONÁRIO', 'Nome do funcionário:')
+            nome_funcionario, nome_ok = QInputDialog.getText(
+                None, 'IDENTIFICAÇÃO DO FUNCIONÁRIO', 'Nome do funcionário:')
             if nome_ok:
                 cargos = ["ADMINISTRADOR", "VENDEDOR", "ESTOQUE"]
-                cargo, cargo_ok = QInputDialog.getItem(None, "CARGOS", "Qual será o cargo?", cargos, 0, False)
-                
+                cargo, cargo_ok = QInputDialog.getItem(
+                    None, "CARGOS", "Qual será o cargo?", cargos, 0, False)
+
                 if cargo_ok:
                     matricula = secrets.token_hex(5)
-                    dados_funcionario = (matricula, nome_funcionario, cargo, usuario, senha)
+                    dados_funcionario = (
+                        matricula, nome_funcionario, cargo, usuario, senha)
 
                     db = DB_Gerentia()
                     db.conexao()
@@ -341,7 +420,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                         msg = QMessageBox()
                         msg.setIcon(QMessageBox.Critical)
                         msg.setWindowTitle("Erro")
-                        msg.setText("Erro ao cadastrar, verifique se as informações foram preenchidas corretamente!")
+                        msg.setText(
+                            "Erro ao cadastrar, verifique se as informações foram preenchidas corretamente!")
                         msg.exec()
                         db.fechar_conexao()
                         return
@@ -350,16 +430,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     msg = QMessageBox()
                     msg.setIcon(QMessageBox.Warning)
                     msg.setWindowTitle("Aviso!")
-                    msg.setText("Não foi possível cadastrar o usuário.\nDados insuficientes!")
+                    msg.setText(
+                        "Não foi possível cadastrar o usuário.\nDados insuficientes!")
                     msg.exec()
                     return -1
             else:
                 msg = QMessageBox()
                 msg.setIcon(QMessageBox.Warning)
                 msg.setWindowTitle("Aviso!")
-                msg.setText("Não foi possível cadastrar o usuário.\nDados insuficientes, tente novamente!")
+                msg.setText(
+                    "Não foi possível cadastrar o usuário.\nDados insuficientes, tente novamente!")
                 msg.exec()
-                    
 
     def remover_usuario(self):
         db = DB_Gerentia()
@@ -370,7 +451,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         msg.setWindowTitle("Remover Funcionário")
         msg.setText("O funcionário será excluído do sistema.")
         msg.setInformativeText("Tem certeza que deseja remove-lo?")
-        msg.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        msg.setStandardButtons(
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
 
         # ALTERAR TEXTO PADRÃO DOS BOTÕES
         msg.button(QMessageBox.StandardButton.Yes).setText("Sim")
@@ -394,7 +476,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     ####################################################################################################
 
-            
+
 if __name__ == "__main__":
     db = DB_Gerentia()
     db.conexao()
@@ -407,4 +489,3 @@ if __name__ == "__main__":
     window = Login()
     window.show()
     app.exec()
-    

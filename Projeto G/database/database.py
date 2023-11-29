@@ -7,6 +7,7 @@
 #####################################################################
 import sqlite3
 
+
 class DB_Gerentia:
     def __init__(self, nome="gerentia.db") -> None:
         self.nome = nome
@@ -24,7 +25,7 @@ class DB_Gerentia:
 
         cursor = self.conn.cursor()
         cursor.execute("""
-            	CREATE TABLE IF NOT EXISTS estoque (
+            	CREATE TABLE IF NOT EXISTS tb_estoque (
             	cod NOT NULL PRIMARY KEY,
             	nome VARCHAR(100) NOT NULL,
             	descricao TEXT,
@@ -32,30 +33,33 @@ class DB_Gerentia:
             	preco_compra REAL,
             	preco_venda REAL,
             	data_atual DATE DEFAULT CURRENT_DATE,
-            	hora_atual TIME DEFAULT CURRENT_TIME
+            	hora_atual TIME DEFAULT CURRENT_TIME,
+                status NUMERIC,
+                sincronizado NUMERIC
             	);
             	""")
 
     def cadastrar_produto(self, dadosProduto):
 
-        campos_tabela = ('cod', 'nome', 'descricao', 'quantidade', 'preco_compra', 'preco_venda', 'data_atual', 'hora_atual')
+        campos_tabela = ('cod', 'nome', 'descricao', 'quantidade',
+                         'preco_compra', 'preco_venda', 'data_atual', 'hora_atual', 'status', 'sincronizado')
 
-        qntd = ('?,?,?,?,?,?,?,?')
+        qntd = ('?,?,?,?,?,?,?,?,?,?')
         cursor = self.conn.cursor()
 
         try:
             cursor.execute(f"""
-            INSERT INTO estoque {campos_tabela} 
+            INSERT INTO tb_estoque {campos_tabela} 
             VALUES({qntd})""", dadosProduto)
             self.conn.commit()
             return "OK"
-        except:
-            return "Erro"
+        except Exception as error:
+            return error
 
     def mostrar_produtos(self):
         try:
             cursor = self.conn.cursor()
-            cursor.execute("SELECT * FROM estoque")
+            cursor.execute("SELECT * FROM tb_estoque")
             estoque = cursor.fetchall()
             return estoque
         except Exception as e:
@@ -65,7 +69,7 @@ class DB_Gerentia:
     def excluir_estoque(self, cod):
         try:
             cursor = self.conn.cursor()
-            cursor.execute(f"DELETE FROM estoque WHERE cod = '{cod}'")
+            cursor.execute(f"DELETE FROM tb_estoque WHERE cod = '{cod}'")
             self.conn.commit()
             return "Cadastro excluído com sucesso!"
         except:
@@ -75,7 +79,7 @@ class DB_Gerentia:
 
         cursor = self.conn.cursor()
 
-        cursor.execute(f""" UPDATE estoque set
+        cursor.execute(f""" UPDATE tb_estoque set
             cod = '{dadosProduto[0]}',
             nome = '{dadosProduto[1]}',
             descricao = '{dadosProduto[2]}',
@@ -83,41 +87,53 @@ class DB_Gerentia:
             preco_compra = '{dadosProduto[4]}',
             preco_venda = '{dadosProduto[5]}',
             data_atual = '{dadosProduto[6]}',
-            hora_atual = '{dadosProduto[7]}'
+            hora_atual = '{dadosProduto[7]}',
+            status = 1,
+            sincronizado = 0
             
             WHERE cod = '{dadosProduto[0]}'""")
 
+        self.conn.commit()
+
+    def atualizar_sincronizado(self, cod):
+        cursor = self.conn.cursor()
+        cursor.execute(
+            "UPDATE tb_estoque SET sincronizado = 1 WHERE cod = ? and sincronizado = 0", (cod,))
         self.conn.commit()
 
     def mostrar_produto_especifico(self, pesquisa):
         try:
             cursor = self.conn.cursor()
             # Usando o operador LIKE para pesquisa insensível a maiúsculas e minúsculas
-            cursor.execute("SELECT * FROM estoque WHERE nome LIKE ? OR descricao LIKE ?", ('%' + pesquisa + '%', '%' + pesquisa + '%'))
+            cursor.execute("SELECT * FROM tb_estoque WHERE nome LIKE ? OR descricao LIKE ?",
+                           ('%' + pesquisa + '%', '%' + pesquisa + '%'))
             produtos = cursor.fetchall()
             return produtos
         except Exception as e:
             print(f"Ocorreu um erro ao recuperar produtos: {e}")
             return None
-    
+
     def criar_tabela_funcionarios(self):
 
         cursor = self.conn.cursor()
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS funcionarios (
+            CREATE TABLE IF NOT EXISTS tb_funcionarios (
             matricula NOT NULL PRIMARY KEY,
             nome VARCHAR(100) NOT NULL,
             cargo VARCHAR(100),
             nome_usuario VARCHAR(100),
-            senha VARCHAR(25)
+            senha VARCHAR(25),
+            status NUMERIC,
+            sincronizado NUMERIC
         );
         """)
-        
+
     def cadastrar_usuario(self, dadosUsuario):
 
-        campos_tabela = ('matricula', 'nome', 'cargo', 'nome_usuario', 'senha')
+        campos_tabela = ('matricula', 'nome', 'cargo',
+                         'nome_usuario', 'senha', 'status', 'sincronizado')
 
-        qntd = ('?,?,?,?,?')
+        qntd = ('?,?,?,?,?,?,?')
         cursor = self.conn.cursor()
 
         try:
@@ -128,35 +144,38 @@ class DB_Gerentia:
             return "OK"
         except:
             return "Erro"
-        
+
     def remover_funcionario(self, matricula, nome):
         try:
             cursor = self.conn.cursor()
-            cursor.execute(f"SELECT nome FROM funcionarios WHERE matricula = '{matricula}'")
+            cursor.execute(
+                f"SELECT nome FROM tb_funcionarios WHERE matricula = '{matricula}'")
             result = cursor.fetchone()
             if result is None:
                 return "Matrícula não encontrada!"
             elif result[0] != nome:
                 return f"O nome não corresponde à matrícula! O nome da matrícula é {result[0]} e não {nome}."
             else:
-                cursor.execute(f"DELETE FROM funcionarios WHERE matricula = '{matricula}'")
+                cursor.execute(
+                    f"DELETE FROM tb_funcionarios WHERE matricula = '{matricula}'")
                 self.conn.commit()
                 return "Usuário excluído com sucesso!"
         except Exception as e:
             print(e)
             return "Erro ao excluir registro!"
-        
+
     def adicionar_admin_padrao(self):
         try:
             cursor = self.conn.cursor()
             # Verifica se o administrador padrão já existe
-            cursor.execute("SELECT matricula FROM funcionarios WHERE matricula = 'admin'")
+            cursor.execute(
+                "SELECT matricula FROM tb_funcionarios WHERE matricula = 'admin'")
             result = cursor.fetchone()
             # Se o administrador padrão não existir, o sistema adiciona
             if result is None:
                 cursor.execute("""
-                    INSERT INTO funcionarios (matricula, nome, cargo, nome_usuario, senha) 
-                    VALUES ('admin', 'Admin', 'Administrador', 'admin', 'admin123')
+                    INSERT INTO tb_funcionarios (matricula, nome, cargo, nome_usuario, senha, status, sincronizado) 
+                    VALUES ('admin', 'Admin', 'Administrador', 'admin', 'admin123', 0, 0)
                 """)
                 self.conn.commit()
                 print("Administrador padrão adicionado com sucesso!")
@@ -165,10 +184,11 @@ class DB_Gerentia:
         except Exception as e:
             print(e)
 
-    def verifica_login(self, usuario, senha):
+    def verificar_login(self, usuario, senha):
         try:
             cursor = self.conn.cursor()
-            cursor.execute("""SELECT * FROM funcionarios WHERE nome_usuario = ? AND senha = ?""", (usuario, senha))
+            cursor.execute(
+                """SELECT * FROM tb_funcionarios WHERE nome_usuario = ? AND senha = ?""", (usuario, senha))
 
             usuarios = cursor.fetchall()
             if len(usuarios) > 0:
