@@ -125,18 +125,71 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.animacao.setEasingCurve(QEasingCurve.InOutQuart)
         # INICIANDO ANIMAÇÃO
         self.animacao.start()
+        
+    ####################################################################################################
+    # FUNÇÕES PARA REQUISIÇÕES COM A API
+        
+
+    def sincronizar_estoque_sevidor(self, req):
+        try:
+            res = requests.post('http://localhost:8000/api/stock/sinc', json=req)
+        except Exception as err:
+            print("Conexão recusada!")
+        else:
+            if res.status_code == 200:
+                # Requisição feita com sucesso
+                return 1
+
+            # Requisição com erros
+            err = Exception(res.json['error'])
+            return err.args[0]
+
+    def sincronizar_estoque_local(self):
+        try:
+            res = requests.get('http://localhost:8000/api/stock/local')
+        except Exception as err:
+            print("Conexão recusada!")
+        else:
+            if res.status_code == 200:
+                # Requisição feita com sucesso
+                return res.json['Content']
+
+            # Requisição com erros
+            err = Exception(res.json['error'])
+            return err.args[0]
+
+    def sincronizar_admin_sevidor(self, req):
+        try:
+            res = requests.post('http://localhost:8000/api/admin/sinc', json=req)
+        except Exception as err:
+            print("Conexão recusada!")
+        else:
+            if res.status_code == 200:
+                # Requisição feita com sucesso
+                return 1
+
+            # Requisição com erros
+            err = Exception(res.json['error'])
+            return err.args[0]
+
+    def sincronizar_admin_local(self):
+        try:
+            res = requests.get('http://localhost:8000/api/admin/local')
+        except Exception as err:
+            print("Conexão recusada!")
+        else:
+            if res.status_code == 200:
+                # Requisição feita com sucesso
+                return res.json['Content']
+
+            # Requisição com erros
+            err = Exception(res.json['error'])
+            return err.args[0]
+
 
     ####################################################################################################
     # FUNÇÕES PARA OS PRODUTOS
-
-    def sincronizar_sevidor(self, request_json):
-        res = requests.post(
-            'http://localhost:8000/api/stock/sinc', json=request_json)
-
-        if res.ok:
-            return True
-
-        return res.json['error']
+    
 
     def limpar_area_cadastro(self):
         self.txt_nome.clear()
@@ -178,30 +231,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             msg.setWindowTitle("Cadastro Realizado")
             msg.setText("Cadastro Realizado com sucesso")
             msg.exec()
+            
+            # Tentativa de sinconizar com a API
+            
+            request = {"cod": cod, "nome": nome, "descricao": descricao, "quantidade": quantidade, "preco_compra": preco_compra, "preco_venda": preco_venda, "data_atual": data_atual, "hora_atual": hora_atual, "status": 0, "sincronizado": 0}
 
-            try:
-                request_json = {
-                    "cod": cod, "nome": nome, "descricao": descricao, "quantidade": quantidade, "preco_compra": preco_compra, "preco_venda": preco_venda, "data_atual": data_atual, "hora_atual": hora_atual, "status": 0, "sincronizado": 0
-                }
-
-                resp = self.sincronizar_sevidor(request_json)
-                if resp == True:
-                    db.atualizar_sincronizado(cod)
-                else:
-                    msg = QMessageBox()
-                    msg.setIcon(QMessageBox.Critical)
-                    msg.setWindowTitle("Erro")
-                    msg.setText(resp)
-                    msg.exec()
-                    db.fechar_conexao()
-
-            except Exception as error:
-                msg = QMessageBox()
-                msg.setIcon(QMessageBox.Critical)
-                msg.setWindowTitle("Erro")
-                msg.setText(error.args[0])
-                msg.exec()
-                db.fechar_conexao()
+            resp = self.sincronizar_estoque_sevidor(request)
+            if resp == 1:
+                db.atualizar_sincronizado(cod)
+            else:
+                print(f"API_ERROR: {resp}")
+                
+            # fechar a conexão com o database
 
             db.fechar_conexao()
             self.mostrar_produtos()
@@ -245,19 +286,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         db.conexao()
 
         for produto in dados_att:
-            db.alterar_produto(tuple(produto))
-            req = {"cod": produto[0], "nome": produto[1], "descricao": produto[2], "quantidade": produto[3], "preco_compra": produto[4],
-                   "preco_venda": produto[5], "data_atual": produto[6], "hora_atual": produto[7], "status": 1, "sincronizado": 0}
-            resp = self.sincronizar_sevidor(req)
-            if resp == True:
-                db.atualizar_sincronizado(req['cod'])
+            try:
+                db.alterar_produto(tuple(produto))
+            except Exception as err:
+                print(f'ERROR DB: {err}')
             else:
-                msg = QMessageBox()
-                msg.setIcon(QMessageBox.Critical)
-                msg.setWindowTitle("Erro")
-                msg.setText(resp)
-                msg.exec()
-                db.fechar_conexao()
+                # Tentativa de sinconizar com a API
+                request = {"cod": produto[0], "nome": produto[1], "descricao": produto[2], "quantidade": produto[3], "preco_compra": produto[4], "preco_venda": produto[5], "data_atual": produto[6], "hora_atual": produto[7], "status": 1, "sincronizado": 0}
+
+                resp = self.sincronizar_estoque_sevidor(request)
+                if resp == 1:
+                    db.atualizar_sincronizado(produto[0])
+                else:
+                    print(f"API_ERROR: {resp}")
 
         db.fechar_conexao()
 
@@ -288,20 +329,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         resposta = msg.exec()
 
         if resposta == QMessageBox.Yes:
-            cod_barras = self.tb_estoque.selectionModel(
-            ).currentIndex().siblingAtColumn(0).data()
-            resultado = db.excluir_estoque(cod_barras)
-            req = {"cod": cod_barras, "status": 2, "sincronizado": 0}
-            resp = self.sincronizar_sevidor(req)
-            if resp == True:
-                db.atualizar_sincronizado(cod_barras)
+            cod_barras = self.tb_estoque.selectionModel().currentIndex().siblingAtColumn(0).data()
+            try:
+                resultado = db.excluir_estoque(cod_barras)
+            except Exception as err:
+                print(f'ERROR DB: {err}')
             else:
-                msg = QMessageBox()
-                msg.setIcon(QMessageBox.Critical)
-                msg.setWindowTitle("Erro")
-                msg.setText(resp)
-                msg.exec()
-                db.fechar_conexao()
+                request = {"cod": cod_barras, "status": 2, "sincronizado": 0}
+                resp = self.sincronizar_estoque_sevidor(request)
+                if resp == 1:
+                    db.atualizar_sincronizado(cod_barras)
+                else:
+                    print(f"API_ERROR: {resp}")
 
             self.mostrar_produtos()
 
@@ -318,7 +357,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         hora_atual = datetime.now().strftime('%H-%M-%S')
 
         conn = sqlite3.connect("gerentia.db")
-        estoque = pandas.read_sql_query("""SELECT * FROM estoque""", conn)
+        estoque = pandas.read_sql_query("""SELECT * FROM tb_estoque""", conn)
 
         estoque.to_excel(
             excel_writer=f"Relatório do estoque do dia {data_atual} às {hora_atual}.xlsx", sheet_name="Estoque", index=False)
@@ -360,7 +399,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     ####################################################################################################
 
     ####################################################################################################
-    # FUNÇÕES PARA OS FUNCIOONÁRIOS
+    # FUNÇÕES PARA OS FUNCIONÁRIOS
     def limpa_lineEdit(self):
         self.txt_cUsuario.clear()
         self.txt_cSenha.clear()
