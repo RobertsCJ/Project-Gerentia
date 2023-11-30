@@ -65,6 +65,17 @@ class DB_Gerentia:
         except Exception as e:
             print(f"Ocorreu um erro ao recuperar produtos: {e}")
             return None
+    
+    def mostrar_produtos_removidos(self):
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute("SELECT * FROM tb_estoque WHERE status == 2")
+            estoque = cursor.fetchall()
+            return estoque
+        except Exception as e:
+            print(f"Ocorreu um erro ao recuperar produtos: {e}")
+            return None
+
 
     def excluir_estoque_permanentemente(self, cod):
         try:

@@ -90,6 +90,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.btn_excluir.clicked.connect(self.excluir_produto)
         self.btn_relatorio.clicked.connect(self.gerar_relatorio)
         self.btn_pesquisar.clicked.connect(self.pesquisar)
+        self.btn_sincronizar.clicked.connect(self.sincronizar_manualmente)
         ###########################################################################################
 
         ###########################################################################################
@@ -144,19 +145,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             err = Exception(res.json['error'])
             return err.args[0]
 
-    def sincronizar_estoque_local(self):
-        try:
-            res = requests.get('http://localhost:8000/api/stock/local')
-        except Exception as err:
-            print("Conexão recusada!")
-        else:
-            if res.status_code == 200:
-                # Requisição feita com sucesso
-                return res.json['Content']
+    # def sincronizar_estoque_local(self):
+    #     try:
+    #         res = requests.get('http://localhost:8000/api/stock/local')
+    #     except Exception as err:
+    #         print("Conexão recusada!")
+    #     else:
+    #         if res.status_code == 200:
+    #             # Requisição feita com sucesso
+    #             return res.json['Content']
 
-            # Requisição com erros
-            err = Exception(res.json['error'])
-            return err.args[0]
+    #         # Requisição com erros
+    #         err = Exception(res.json['error'])
+    #         return err.args[0]
 
     def sincronizar_admin_sevidor(self, req):
         try:
@@ -172,19 +173,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             err = Exception(res.json['error'])
             return err.args[0]
 
-    def sincronizar_admin_local(self):
-        try:
-            res = requests.get('http://localhost:8000/api/admin/local')
-        except Exception as err:
-            print("Conexão recusada!")
-        else:
-            if res.status_code == 200:
-                # Requisição feita com sucesso
-                return res.json['Content']
+    # def sincronizar_admin_local(self):
+    #     try:
+    #         res = requests.get('http://localhost:8000/api/admin/local')
+    #     except Exception as err:
+    #         print("Conexão recusada!")
+    #     else:
+    #         if res.status_code == 200:
+    #             # Requisição feita com sucesso
+    #             return res.json['Content']
 
-            # Requisição com erros
-            err = Exception(res.json['error'])
-            return err.args[0]
+    #         # Requisição com erros
+    #         err = Exception(res.json['error'])
+    #         return err.args[0]
 
 
     ####################################################################################################
@@ -395,6 +396,75 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             msg.setWindowTitle("Pesquisa")
             msg.setText("O produto informado, não foi localizado!")
             msg.exec()
+            
+    def montar_objeto_estoque(self, dados):
+        estoques = list()
+        for data in dados:
+            estoque = dict()
+            estoque['cod'] = data[0]
+            estoque['nome'] = data[1]
+            estoque['descricao'] = data[2]
+            estoque['quantidade'] = data[3]
+            estoque['preco_compra'] = data[4]
+            estoque['preco_venda'] = data[5]
+            estoque['data_atual'] = data[6]
+            estoque['hora_atual'] = data[7]
+            estoque['status'] = data[8]
+            estoque['sincronizado'] = data[9]
+            estoques.append(estoque)
+        
+        return estoques
+        
+
+    def sincronizar_manualmente(self):
+        db = DB_Gerentia()
+        db.conexao()
+        
+        requisição_bem_sucessida = True
+
+        dados_local_estoque = db.mostrar_produtos()
+        estoques = self.montar_objeto_estoque(dados_local_estoque)
+        
+        for estoque in estoques:
+            if estoque['sincronizado'] == 0:
+                request = {"cod": estoque["cod"], "nome": estoque["nome"], "descricao": estoque["descricao"], "quantidade": estoque["quantidade"], "preco_compra": estoque["preco_compra"], "preco_venda": estoque["preco_venda"], "data_atual": estoque["data_atual"], "hora_atual": estoque["hora_atual"], "status": estoque["status"], "sincronizado": estoque["sincronizado"]}
+
+                resp = self.sincronizar_estoque_sevidor(request)
+                if resp == 1:
+                    db.atualizar_sincronizado(estoque['cod'])
+                else:
+                    print(f"API_ERROR: {resp}")
+                    requisição_bem_sucessida = False
+                    
+        dados_removidos_local_estoque = db.mostrar_produtos_removidos()
+        estoques = self.montar_objeto_estoque(dados_removidos_local_estoque)
+        
+        for estoque in estoques:
+            request = {"cod": estoque["cod"], "nome": estoque["nome"], "descricao": estoque["descricao"], "quantidade": estoque["quantidade"], "preco_compra": estoque["preco_compra"], "preco_venda": estoque["preco_venda"], "data_atual": estoque["data_atual"], "hora_atual": estoque["hora_atual"], "status": estoque["status"], "sincronizado": estoque["sincronizado"]}
+
+            resp = self.sincronizar_estoque_sevidor(request)
+            if resp == 1:
+                db.excluir_estoque_permanentemente(estoque['cod'])
+            else:
+                print(f"API_ERROR: {resp}")
+                requisição_bem_sucessida = False
+
+        if requisição_bem_sucessida:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Information)
+            msg.setWindowTitle("Sincronização")
+            msg.setText("A sincronização com o servidor foi feita com sucesso!")
+            msg.exec()
+        else:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setWindowTitle("Erro")
+            msg.setText("Não foi possível sincronizar agora, tente novamente mais tarde!")
+            msg.exec()
+    
+        db.fechar_conexao()
+  
+        
 
     ####################################################################################################
 
