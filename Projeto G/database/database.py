@@ -126,7 +126,7 @@ class DB_Gerentia:
         try:
             cursor = self.conn.cursor()
             # Usando o operador LIKE para pesquisa insensível a maiúsculas e minúsculas
-            cursor.execute("SELECT * FROM tb_estoque WHERE (nome LIKE ? OR descricao LIKE ?) and status != 2",
+            cursor.execute("SELECT * FROM tb_estoque WHERE (nome LIKE ? OR descricao LIKE ?) AND status != 2",
                            ('%' + pesquisa + '%', '%' + pesquisa + '%'))
             produtos = cursor.fetchall()
             return produtos

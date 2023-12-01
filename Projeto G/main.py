@@ -5,16 +5,16 @@
 # V: 1.0.0
 #
 #####################################################################
-from typing import Optional
 
 import requests
-
-import PySide6.QtCore
-import PySide6.QtWidgets
+from dotenv import load_dotenv
+from os import getenv
 from telas.ui_main import Ui_MainWindow
 from telas.ui_login import Ui_Form
 from database.database import DB_Gerentia
 from importacoes import *
+
+load_dotenv()
 
 
 class Login(QWidget, Ui_Form):
@@ -117,8 +117,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             novoTamanho = 0
 
         # ANIMAÇÃO DO MENU
-        self.animacao = QPropertyAnimation(
-            self.frame_menu_lateral, b"maximumWidth")
+        self.animacao = QPropertyAnimation(self.frame_menu_lateral, b"maximumWidth")
         self.animacao.setDuration(400)
         self.animacao.setStartValue(largura)
         self.animacao.setEndValue(novoTamanho)
@@ -130,63 +129,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     ####################################################################################################
     # FUNÇÕES PARA REQUISIÇÕES COM A API
         
-
     def sincronizar_estoque_sevidor(self, req):
         try:
-            res = requests.post('http://localhost:8000/api/stock/sinc', json=req)
-        except Exception as err:
-            print("Conexão recusada!")
+            api_host = getenv("API_HOST")
+            res = requests.post(f'{api_host}/api/stock/sinc', json=req)
+        except requests.exceptions.ConnectionError as err:
+            return err
         else:
             if res.status_code == 200:
                 # Requisição feita com sucesso
                 return 1
-
+            
             # Requisição com erros
-            err = Exception(res.json['error'])
-            return err.args[0]
-
-    # def sincronizar_estoque_local(self):
-    #     try:
-    #         res = requests.get('http://localhost:8000/api/stock/local')
-    #     except Exception as err:
-    #         print("Conexão recusada!")
-    #     else:
-    #         if res.status_code == 200:
-    #             # Requisição feita com sucesso
-    #             return res.json['Content']
-
-    #         # Requisição com erros
-    #         err = Exception(res.json['error'])
-    #         return err.args[0]
-
-    def sincronizar_admin_sevidor(self, req):
-        try:
-            res = requests.post('http://localhost:8000/api/admin/sinc', json=req)
-        except Exception as err:
-            print("Conexão recusada!")
-        else:
-            if res.status_code == 200:
-                # Requisição feita com sucesso
-                return 1
-
-            # Requisição com erros
-            err = Exception(res.json['error'])
-            return err.args[0]
-
-    # def sincronizar_admin_local(self):
-    #     try:
-    #         res = requests.get('http://localhost:8000/api/admin/local')
-    #     except Exception as err:
-    #         print("Conexão recusada!")
-    #     else:
-    #         if res.status_code == 200:
-    #             # Requisição feita com sucesso
-    #             return res.json['Content']
-
-    #         # Requisição com erros
-    #         err = Exception(res.json['error'])
-    #         return err.args[0]
-
+            return res.json()
 
     ####################################################################################################
     # FUNÇÕES PARA OS PRODUTOS
@@ -238,10 +193,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             request = {"cod": cod, "nome": nome, "descricao": descricao, "quantidade": quantidade, "preco_compra": preco_compra, "preco_venda": preco_venda, "data_atual": data_atual, "hora_atual": hora_atual, "status": 0, "sincronizado": 0}
 
             resp = self.sincronizar_estoque_sevidor(request)
-            if resp == 1:
+            if type(resp) is int and resp == 1:
                 db.atualizar_sincronizado(cod)
+            elif type(resp) is requests.exceptions.ConnectionError:
+                print(resp.args[0])
             else:
-                print(f"API_ERROR: {resp}")
+                for key, value in resp.items():
+                    print(f'{key} = {value}')
                 
             # fechar a conexão com o database
 
@@ -296,10 +254,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 request = {"cod": produto[0], "nome": produto[1], "descricao": produto[2], "quantidade": produto[3], "preco_compra": produto[4], "preco_venda": produto[5], "data_atual": produto[6], "hora_atual": produto[7], "status": 1, "sincronizado": 0}
 
                 resp = self.sincronizar_estoque_sevidor(request)
-                if resp == 1:
-                    db.atualizar_sincronizado(produto[0])
+                if type(resp) is int and resp == 1:
+                    db.atualizar_sincronizado(cod)
+                elif type(resp) is requests.exceptions.ConnectionError:
+                    print(resp.args[0])
                 else:
-                    print(f"API_ERROR: {resp}")
+                    for key, value in resp.items():
+                        print(f'{key} = {value}')
 
         db.fechar_conexao()
 
@@ -338,10 +299,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             else:
                 request = {"cod": cod_barras, "status": 2, "sincronizado": 0}
                 resp = self.sincronizar_estoque_sevidor(request)
-                if resp == 1:
-                    db.excluir_estoque_permanentemente(cod_barras)
+                if type(resp) is int and resp == 1:
+                    db.atualizar_sincronizado(cod_barras)
+                elif type(resp) is requests.exceptions.ConnectionError:
+                    print(resp.args[0])
                 else:
-                    print(f"API_ERROR: {resp}")
+                    for key, value in resp.items():
+                        print(f'{key} = {value}')
 
             self.mostrar_produtos()
 
@@ -358,10 +322,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         hora_atual = datetime.now().strftime('%H-%M-%S')
 
         conn = sqlite3.connect("gerentia.db")
-        estoque = pandas.read_sql_query("""SELECT * FROM tb_estoque""", conn)
+        estoque = pandas.read_sql_query("""SELECT * FROM tb_estoque WHERE status != 2""", conn)
 
-        estoque.to_excel(
-            excel_writer=f"Relatório do estoque do dia {data_atual} às {hora_atual}.xlsx", sheet_name="Estoque", index=False)
+        estoque.to_excel(excel_writer=f"relatorios/Relatório do estoque do dia {data_atual} às {hora_atual}.xlsx", sheet_name="Estoque", index=False)
 
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Information)
@@ -396,6 +359,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             msg.setWindowTitle("Pesquisa")
             msg.setText("O produto informado, não foi localizado!")
             msg.exec()
+
+    def verificar_conexão_api(self):
+        try:
+            api_host = getenv("API_HOST")
+            requests.get(f'{api_host}/')
+        except requests.exceptions.ConnectionError:
+            return False
+        else:
+            return True
             
     def montar_objeto_estoque(self, dados):
         estoques = list()
@@ -420,34 +392,45 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         db = DB_Gerentia()
         db.conexao()
         
-        requisição_bem_sucessida = True
+        requisição_bem_sucessida = self.verificar_conexão_api()
 
-        dados_local_estoque = db.mostrar_produtos()
-        estoques = self.montar_objeto_estoque(dados_local_estoque)
+        if requisição_bem_sucessida:
+            dados_local_estoque = db.mostrar_produtos()
+            estoques = self.montar_objeto_estoque(dados_local_estoque)
         
-        for estoque in estoques:
-            if estoque['sincronizado'] == 0:
-                request = {"cod": estoque["cod"], "nome": estoque["nome"], "descricao": estoque["descricao"], "quantidade": estoque["quantidade"], "preco_compra": estoque["preco_compra"], "preco_venda": estoque["preco_venda"], "data_atual": estoque["data_atual"], "hora_atual": estoque["hora_atual"], "status": estoque["status"], "sincronizado": estoque["sincronizado"]}
+            for estoque in estoques:
+                if estoque['sincronizado'] == 0:
+                    request = {"cod": estoque["cod"], "nome": estoque["nome"], "descricao": estoque["descricao"], "quantidade": estoque["quantidade"], "preco_compra": estoque["preco_compra"], "preco_venda": estoque["preco_venda"], "data_atual": estoque["data_atual"], "hora_atual": estoque["hora_atual"], "status": estoque["status"], "sincronizado": estoque["sincronizado"]}
+
+                    resp = self.sincronizar_estoque_sevidor(request)
+                    if type(resp) is int and resp == 1:
+                        db.atualizar_sincronizado(request['cod'])
+                    elif type(resp) is requests.exceptions.ConnectionError:
+                        requisição_bem_sucessida = False
+                        print(resp.args[0])
+                    else:
+                        requisição_bem_sucessida = False
+                        for key, value in resp.items():
+                            print(f'{key} = {value}')
+                
+        if requisição_bem_sucessida:               
+            dados_removidos_local_estoque = db.mostrar_produtos_removidos()
+            estoques = self.montar_objeto_estoque(dados_removidos_local_estoque)
+            
+            for estoque in estoques:
+                request = {"cod": estoque["cod"], "nome": estoque["nome"], "descricao": estoque["descricao"], "quantidade": estoque["quantidade"], "preco_compra": estoque["preco_compra"], "preco_venda": estoque["preco_venda"], "data_atual": estoque["data_atual"], "hora_atual": estoque["hora_atual"], "status": estoque["status"], "sincronizado": 0}
 
                 resp = self.sincronizar_estoque_sevidor(request)
-                if resp == 1:
-                    db.atualizar_sincronizado(estoque['cod'])
-                else:
-                    print(f"API_ERROR: {resp}")
+                if type(resp) is int and resp == 1:
+                    db.excluir_estoque_permanentemente(request['cod'])
+                elif type(resp) is requests.exceptions.ConnectionError:
                     requisição_bem_sucessida = False
-                    
-        dados_removidos_local_estoque = db.mostrar_produtos_removidos()
-        estoques = self.montar_objeto_estoque(dados_removidos_local_estoque)
-        
-        for estoque in estoques:
-            request = {"cod": estoque["cod"], "nome": estoque["nome"], "descricao": estoque["descricao"], "quantidade": estoque["quantidade"], "preco_compra": estoque["preco_compra"], "preco_venda": estoque["preco_venda"], "data_atual": estoque["data_atual"], "hora_atual": estoque["hora_atual"], "status": estoque["status"], "sincronizado": estoque["sincronizado"]}
-
-            resp = self.sincronizar_estoque_sevidor(request)
-            if resp == 1:
-                db.excluir_estoque_permanentemente(estoque['cod'])
-            else:
-                print(f"API_ERROR: {resp}")
-                requisição_bem_sucessida = False
+                    print(resp.args[0])
+                else:
+                    requisição_bem_sucessida = False
+                    for key, value in resp.items():
+                        print(f'{key} = {value}')
+                
 
         if requisição_bem_sucessida:
             msg = QMessageBox()
