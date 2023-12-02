@@ -50,21 +50,3 @@ Boot.writing_logo()
 Boot.erasing_logo()
 
 
-"""
-for i in range(0, len(string)): #escrevendo nome
-    mostrar_logo(string[0:i], '')
-    if string[i] != ' ':
-        sleep(0.1)
-    else:
-        sleep(0.35)
-    system("cls||clear")
-
-for i in range(len(string)-1, string.index(' '), -1): #apagando nome
-    mostrar_logo(string[0:i], amarelo)
-    sleep(0.1)
-    system(clear_screen)
-for i in range(string.index(' '), 0, -1):
-    mostrar_logo(string[0:i], amarelo)
-    sleep(0.35)
-    system(clear_screen)
-"""

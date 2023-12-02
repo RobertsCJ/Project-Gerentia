@@ -19,6 +19,10 @@ load_dotenv()
 
 class Login(QWidget, Ui_Form):
     def __init__(self) -> None:
+        """
+        Template visual da construção da tela de login
+        :returns: nothing
+        """
         super(Login, self).__init__()
         self.setupUi(self)
         self.setWindowTitle("Gerentia - Login do sistema")
@@ -28,7 +32,10 @@ class Login(QWidget, Ui_Form):
         self.tentativas = 0
 
     def abrir_sistema(self):
-
+        """
+        Função que realiza a verificação lógica de login, captura da entrada padrão do usuário o nome de usuário e senha, se os dados estiverem correto, leva o usuário a tela principal, caso contrário, após três tentativas, o sistema se encerra
+        :return: nothing
+        """
         db = DB_Gerentia()
         db.conexao()
         user = str(self.txt_nomeUser.text().strip())
@@ -48,7 +55,7 @@ class Login(QWidget, Ui_Form):
                 msg.setIcon(QMessageBox.Warning)
                 msg.setWindowTitle("Erro ao logar")
                 msg.setText(
-                    f"Usuário ou senha inválodos!\n\nTentativa: {self.tentativas+1} de 3.")
+                    f"Usuário ou senha inválidos!\n\nTentativa: {self.tentativas+1} de 3.")
                 msg.exec()
                 self.tentativas += 1
 
@@ -58,6 +65,7 @@ class Login(QWidget, Ui_Form):
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
+        """Template visual da tela principal"""
         super(MainWindow, self).__init__()
         self.setupUi(self)
         self.setWindowTitle("Gerentia - Sistema de Gerenciamento")
@@ -108,6 +116,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.show()
 
     def abrir_fechar_menu(self):
+        """Função para realizar expansão da barra lateral"""
         # TAMANHO INICIAL DO MENU
         largura = self.frame_menu_lateral.width()
 
@@ -129,7 +138,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     ####################################################################################################
     # FUNÇÕES PARA REQUISIÇÕES COM A API
         
-    def sincronizar_estoque_sevidor(self, req):
+    def sincronizar_estoque_servidor(self, req):
+        """
+        Realiza a requisição dos arquivos do projeto estoque, retorna 1 se for bem sucedido, ou retorna um log em forma de objeto em caso de erro.
+        :req: dict = requisição da API
+        :returns: int | obj 
+        """
         try:
             api_host = getenv("API_HOST")
             res = requests.post(f'{api_host}/api/stock/sinc', json=req)
@@ -148,6 +162,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
 
     def limpar_area_cadastro(self):
+        """
+        Limpa todos os campos de texto do produto.
+        :return: none
+        """
         self.txt_nome.clear()
         self.txt_descricao.clear()
         self.txt_quantidade.clear()
@@ -155,6 +173,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.txt_pVenda.clear()
 
     def adicinar_produtos(self):
+        """
+        
+        :returns: none
+        """
         try:
             cod = str(uuid.uuid4())
             nome = str(self.txt_nome.text().strip().upper())

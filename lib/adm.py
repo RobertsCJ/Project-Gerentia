@@ -17,6 +17,10 @@ def limpar_a_tela() -> None:
 
 
 def log(user, action):
+			"""
+			Recolhe do sistema o usuário, data atual, hora atual e dia da semana formatado e converte em arquivo .txt  
+			:returns: nothing
+			"""
             date_now = datetime.now().date()
             time_now = datetime.now().time()
             data = ''
@@ -175,6 +179,10 @@ class BD_Funcionarios:
 
 
 def menu():
+	"""
+	Template visual para menu de administrador
+	:returns: nothing
+	"""
     print(f"""{"-"*160}\n{"MENU":^160}\n{"-"*160}
 1 - CADASTRAR FUNCIONÁRIO 
 2 - ATUALIZAR CADASTRO
@@ -185,6 +193,10 @@ def menu():
 
 
 def sistema_adm():
+	"""
+	Chama outras funções dependendo da resposta entrada padrão, é utilizado em conjunto com a função menu()
+	:returns: nothing
+	"""
 	conn = sqlite3.connect('database/gerentia.db')
 	cursor = conn.cursor()
 	BD = BD_Funcionarios(cursor)
