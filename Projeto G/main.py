@@ -48,6 +48,8 @@ class Login(QWidget, Ui_Form):
 
         if resultado == "Usuário validado!":
             self.w = MainWindow()
+            self.w.lbl_usuario.setText(user)
+            self.w.lbl_status.setText("Online")
             self.close()
         else:
             if self.tentativas < 3:
@@ -242,6 +244,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         db.conexao()
 
         visualizacao = db.mostrar_produtos()
+        print(visualizacao)
 
         self.tb_estoque.clearContents()
         self.tb_estoque.setRowCount(len(visualizacao))
