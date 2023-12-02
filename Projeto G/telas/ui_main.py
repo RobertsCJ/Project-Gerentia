@@ -494,8 +494,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_12.addLayout(self.horizontalLayout_7)
 
         self.tb_pesquisa = QTableWidget(self.frame_5)
-        if (self.tb_pesquisa.columnCount() < 8):
-            self.tb_pesquisa.setColumnCount(8)
+        if (self.tb_pesquisa.columnCount() < 10):
+            self.tb_pesquisa.setColumnCount(10)
         __qtablewidgetitem = QTableWidgetItem()
         self.tb_pesquisa.setHorizontalHeaderItem(0, __qtablewidgetitem)
         __qtablewidgetitem1 = QTableWidgetItem()
@@ -512,11 +512,15 @@ class Ui_MainWindow(object):
         self.tb_pesquisa.setHorizontalHeaderItem(6, __qtablewidgetitem6)
         __qtablewidgetitem7 = QTableWidgetItem()
         self.tb_pesquisa.setHorizontalHeaderItem(7, __qtablewidgetitem7)
+        __qtablewidgetitem8 = QTableWidgetItem()
+        self.tb_pesquisa.setHorizontalHeaderItem(8, __qtablewidgetitem8)
+        __qtablewidgetitem9 = QTableWidgetItem()
+        self.tb_pesquisa.setHorizontalHeaderItem(9, __qtablewidgetitem9)
         self.tb_pesquisa.setObjectName(u"tb_pesquisa")
         self.tb_pesquisa.setStyleSheet(u"QHeaderView::section{\n"
 "background-color: rgb(148, 148, 148);\n"
 "color: white;\n"
-"font: 10pt \"Segoe UI Variable Display Regular\";\n"
+"font: 7pt \"Segoe UI Variable Display Regular\";\n"
 "}\n"
 "QTableWidget{\n"
 "background-color: white;\n"
@@ -626,8 +630,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_10.addWidget(self.frame_3)
 
         self.tb_estoque = QTableWidget(self.tab_2)
-        if (self.tb_estoque.columnCount() < 8):
-            self.tb_estoque.setColumnCount(8)
+        if (self.tb_estoque.columnCount() < 10):
+            self.tb_estoque.setColumnCount(10)
         __qtablewidgetitem8 = QTableWidgetItem()
         self.tb_estoque.setHorizontalHeaderItem(0, __qtablewidgetitem8)
         __qtablewidgetitem9 = QTableWidgetItem()
@@ -644,11 +648,15 @@ class Ui_MainWindow(object):
         self.tb_estoque.setHorizontalHeaderItem(6, __qtablewidgetitem14)
         __qtablewidgetitem15 = QTableWidgetItem()
         self.tb_estoque.setHorizontalHeaderItem(7, __qtablewidgetitem15)
+        __qtablewidgetitem16 = QTableWidgetItem()
+        self.tb_estoque.setHorizontalHeaderItem(8, __qtablewidgetitem16)
+        __qtablewidgetitem17 = QTableWidgetItem()
+        self.tb_estoque.setHorizontalHeaderItem(9, __qtablewidgetitem17)
         self.tb_estoque.setObjectName(u"tb_estoque")
         self.tb_estoque.setStyleSheet(u"QHeaderView::section{\n"
 "background-color: rgb(148, 148, 148);\n"
 "color: white;\n"
-"font: 10pt \"Segoe UI Variable Display Regular\";\n"
+"font: 7pt \"Segoe UI Variable Display Regular\";\n"
 "}\n"
 "QTableWidget{\n"
 "background-color: white;\n"
@@ -1099,6 +1107,10 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem6.setText(QCoreApplication.translate("MainWindow", u"DATA", None));
         ___qtablewidgetitem7 = self.tb_pesquisa.horizontalHeaderItem(7)
         ___qtablewidgetitem7.setText(QCoreApplication.translate("MainWindow", u"HORA", None));
+        ___qtablewidgetitem8 = self.tb_pesquisa.horizontalHeaderItem(8)
+        ___qtablewidgetitem8.setText(QCoreApplication.translate("MainWindow", u"STATUS", None));
+        ___qtablewidgetitem9 = self.tb_pesquisa.horizontalHeaderItem(9)
+        ___qtablewidgetitem9.setText(QCoreApplication.translate("MainWindow", u"SINCRONIZADO", None));
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("MainWindow", u"Cadastrar Produto", None))
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><span style=\" font-size:16pt; font-weight:700;\">PRODUTOS CADASTRADOS</span></p></body></html>", None))
         self.btn_relatorio.setText(QCoreApplication.translate("MainWindow", u"Gerar Relat\u00f3rio", None))
@@ -1121,6 +1133,10 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem14.setText(QCoreApplication.translate("MainWindow", u"DATA", None));
         ___qtablewidgetitem15 = self.tb_estoque.horizontalHeaderItem(7)
         ___qtablewidgetitem15.setText(QCoreApplication.translate("MainWindow", u"HORA", None));
+        ___qtablewidgetitem16 = self.tb_estoque.horizontalHeaderItem(8)
+        ___qtablewidgetitem16.setText(QCoreApplication.translate("MainWindow", u"STATUS", None));
+        ___qtablewidgetitem17 = self.tb_estoque.horizontalHeaderItem(9)
+        ___qtablewidgetitem17.setText(QCoreApplication.translate("MainWindow", u"SINCRONIZADO", None));
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"Produtos", None))
         self.label_13.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><span style=\" font-size:18pt; font-weight:700;\">CONTATOS</span></p></body></html>", None))
         self.label_14.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><img src=\":/icons/icons/icon_dev.ico\"/></p></body></html>", None))

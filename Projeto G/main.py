@@ -216,8 +216,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             
             request = {"cod": cod, "nome": nome, "descricao": descricao, "quantidade": quantidade, "preco_compra": preco_compra, "preco_venda": preco_venda, "data_atual": data_atual, "hora_atual": hora_atual, "status": 0, "sincronizado": 0}
 
-            resp = self.sincronizar_estoque_sevidor(request)
-            if type(resp) is int and resp == 1:
+            resp = self.sincronizar_estoque_servidor(request)
+            if resp == 1:
                 db.atualizar_sincronizado(cod)
             elif type(resp) is requests.exceptions.ConnectionError:
                 print(resp.args[0])
@@ -244,15 +244,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         db.conexao()
 
         visualizacao = db.mostrar_produtos()
-        print(visualizacao)
 
         self.tb_estoque.clearContents()
         self.tb_estoque.setRowCount(len(visualizacao))
 
         for linhas, infos in enumerate(visualizacao):
             for colunas, dados in enumerate(infos):
-                self.tb_estoque.setItem(
-                    linhas, colunas, QTableWidgetItem(str(dados)))
+                if colunas == 8 and dados == 0:
+                    dados = "NOVO"
+                elif colunas == 8 and dados == 1:
+                    dados = "ALTERADO"
+                elif colunas == 9 and dados == 0:
+                    dados = "NÃO"
+                elif colunas == 9 and dados == 1:
+                    dados = "SIM"
+                    
+                self.tb_estoque.setItem(linhas, colunas, QTableWidgetItem(str(dados)))
         db.fechar_conexao()
 
     def atualizar_produto(self):
@@ -278,9 +285,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 # Tentativa de sinconizar com a API
                 request = {"cod": produto[0], "nome": produto[1], "descricao": produto[2], "quantidade": produto[3], "preco_compra": produto[4], "preco_venda": produto[5], "data_atual": produto[6], "hora_atual": produto[7], "status": 1, "sincronizado": 0}
 
-                resp = self.sincronizar_estoque_sevidor(request)
-                if type(resp) is int and resp == 1:
-                    db.atualizar_sincronizado(cod)
+                resp = self.sincronizar_estoque_servidor(request)
+                if resp == 1:
+                    db.atualizar_sincronizado(produto[0])
                 elif type(resp) is requests.exceptions.ConnectionError:
                     print(resp.args[0])
                 else:
@@ -323,8 +330,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 print(f'ERROR DB: {err}')
             else:
                 request = {"cod": cod_barras, "status": 2, "sincronizado": 0}
-                resp = self.sincronizar_estoque_sevidor(request)
-                if type(resp) is int and resp == 1:
+                resp = self.sincronizar_estoque_servidor(request)
+                if resp == 1:
                     db.atualizar_sincronizado(cod_barras)
                 elif type(resp) is requests.exceptions.ConnectionError:
                     print(resp.args[0])
@@ -348,7 +355,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         conn = sqlite3.connect("gerentia.db")
         estoque = pandas.read_sql_query("""SELECT * FROM tb_estoque WHERE status != 2""", conn)
-
+        estoque['status'] = estoque['status'].replace(0, 'novo')
+        estoque['status'] = estoque['status'].replace(1, 'alterado')
+        estoque['sincronizado'] = estoque['sincronizado'].replace(0, 'não')
+        estoque['sincronizado'] = estoque['sincronizado'].replace(1, 'sim')
+        
         estoque.to_excel(excel_writer=f"relatorios/Relatório do estoque do dia {data_atual} às {hora_atual}.xlsx", sheet_name="Estoque", index=False)
 
         msg = QMessageBox()
@@ -374,8 +385,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             # PREENCHER A TABELA COM OS DADOS DOS PRODUTOS
             for linhas, infos in enumerate(produtos):
                 for colunas, dados in enumerate(infos):
-                    self.tb_pesquisa.setItem(
-                        linhas, colunas, QTableWidgetItem(str(dados)))
+                    if colunas == 8 and dados == 0:
+                        dados = "NOVO"
+                    elif colunas == 8 and dados == 1:
+                        dados = "ALTERADO"
+                    elif colunas == 9 and dados == 0:
+                        dados = "NÃO"
+                    elif colunas == 9 and dados == 1:
+                        dados = "SIM"
+                        
+                    self.tb_pesquisa.setItem(linhas, colunas, QTableWidgetItem(str(dados)))
 
             db.fechar_conexao()
         else:
@@ -424,10 +443,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             estoques = self.montar_objeto_estoque(dados_local_estoque)
         
             for estoque in estoques:
-                if estoque['sincronizado'] == 0:
+                if estoque['status'] == 1 and estoque['sincronizado'] == 0:
                     request = {"cod": estoque["cod"], "nome": estoque["nome"], "descricao": estoque["descricao"], "quantidade": estoque["quantidade"], "preco_compra": estoque["preco_compra"], "preco_venda": estoque["preco_venda"], "data_atual": estoque["data_atual"], "hora_atual": estoque["hora_atual"], "status": estoque["status"], "sincronizado": estoque["sincronizado"]}
 
-                    resp = self.sincronizar_estoque_sevidor(request)
+                    resp = self.sincronizar_estoque_servidor(request)
                     if type(resp) is int and resp == 1:
                         db.atualizar_sincronizado(request['cod'])
                     elif type(resp) is requests.exceptions.ConnectionError:
@@ -445,8 +464,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             for estoque in estoques:
                 request = {"cod": estoque["cod"], "nome": estoque["nome"], "descricao": estoque["descricao"], "quantidade": estoque["quantidade"], "preco_compra": estoque["preco_compra"], "preco_venda": estoque["preco_venda"], "data_atual": estoque["data_atual"], "hora_atual": estoque["hora_atual"], "status": estoque["status"], "sincronizado": 0}
 
-                resp = self.sincronizar_estoque_sevidor(request)
-                if type(resp) is int and resp == 1:
+                resp = self.sincronizar_estoque_servidor(request)
+                if resp == 1:
                     db.excluir_estoque_permanentemente(request['cod'])
                 elif type(resp) is requests.exceptions.ConnectionError:
                     requisição_bem_sucessida = False
@@ -471,7 +490,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             msg.exec()
     
         db.fechar_conexao()
-  
+        self.mostrar_produtos()
         
 
     ####################################################################################################

@@ -89,7 +89,7 @@ class DB_Gerentia:
     def excluir_estoque_pelo_status(self, cod):
         try:
             cursor = self.conn.cursor()
-            cursor.execute(f" UPDATE tb_estoque SET status = 2 WHERE cod = '{cod}'")
+            cursor.execute(f"UPDATE tb_estoque SET status = 2, sincronizado = 0 WHERE cod = ?", (cod,))
             self.conn.commit()
             return "Cadastro excluído com sucesso!"
         except:

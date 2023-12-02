@@ -944,6 +944,16 @@ background-color: white;
                          <string>HORA</string>
                         </property>
                        </column>
+                      <column>
+                        <property name="text">
+                         <string>STATUS</string>
+                        </property>
+                       </column>
+                        <column>
+                        <property name="text">
+                         <string>SINCRONIZADO</string>
+                        </property>
+                       </column>
                       </widget>
                      </item>
                     </layout>
@@ -1137,7 +1147,7 @@ background-color: white;
                        <string notr="true">QHeaderView::section{
 background-color: rgb(148, 148, 148);
 color: white;
-font: 10pt &quot;Segoe UI Variable Display Regular&quot;;
+font: 6pt &quot;Segoe UI Variable Display Regular&quot;;
 }
 QTableWidget{
 background-color: white;
@@ -1181,6 +1191,16 @@ background-color: white;
                       <column>
                        <property name="text">
                         <string>HORA</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>STATUS</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>SINCRONIZADO</string>
                        </property>
                       </column>
                      </widget>

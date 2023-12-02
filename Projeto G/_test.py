@@ -40,8 +40,8 @@ def request_to_api():
         	"preco_venda": 15.40,
         	"data_atual": "2023-11-15",
         	"hora_atual": "12:30:00",
-        	"status": 5,
-        	"sincronizado": 1
+        	"status": 0,
+        	"sincronizado": 0
         }
         
         res = requests.post(f'http://localhost:8000/api/stock/sinc', json=request)
@@ -56,7 +56,8 @@ def request_to_api():
 
 def __test__():
     result = request_to_api()
-    if type(result) is not requests.exceptions.ConnectionError:
+    print(type(result))
+    if type(result) == dict:
         for key, value in result.items():
             print(f'{key} = {value}')
     else:
