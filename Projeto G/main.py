@@ -176,7 +176,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def adicinar_produtos(self):
         """
-        
+	Pega da entrada padrão os dados do produto, salva no banco de dados e sincroniza com a API, levando os dados para o projeto de estoque
         :returns: none
         """
         try:
@@ -240,6 +240,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             return
 
     def mostrar_produtos(self):
+	"""
+	Realiza a conexão com o banco de dados, e mostra todos os dados dos produtos
+	"""
         db = DB_Gerentia()
         db.conexao()
 
@@ -258,11 +261,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     dados = "NÃO"
                 elif colunas == 9 and dados == 1:
                     dados = "SIM"
-                    
+
                 self.tb_estoque.setItem(linhas, colunas, QTableWidgetItem(str(dados)))
         db.fechar_conexao()
 
     def atualizar_produto(self):
+	"""
+	Modifica os dados dos produtos do estoque, realizar conexão com o banco de dados e a API.
+	:returns: None
+	"""
         dados = []
         dados_att = []
 
@@ -306,6 +313,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.mostrar_produtos()
 
     def excluir_produto(self):
+	"""
+	Realiza conexão com o banco de dados, e remove o produto do banco de dados pelo código de barras
+	:returns: none
+	"""
         db = DB_Gerentia()
         db.conexao()
 
@@ -350,6 +361,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         db.fechar_conexao()
 
     def gerar_relatorio(self):
+	"""
+	Gera um relatório do banco de dados para arquivo no formato excel com a data e hora atual. 
+	:returns: None
+	"""
         data_atual = date.today().strftime('%d-%m-%Y')
         hora_atual = datetime.now().strftime('%H-%M-%S')
 
@@ -369,6 +384,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         msg.exec()
 
     def pesquisar(self):
+	"""
+	Coleta a string que está no campo de texto, e compara se essa string está na tablea de produtos no banco de dados.
+	:returns: None
+	"""
         pesquisa = self.txt_pesquisa.text().upper().strip()
 
         db = DB_Gerentia()
@@ -401,10 +420,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Information)
             msg.setWindowTitle("Pesquisa")
-            msg.setText("O produto informado, não foi localizado!")
+            msg.setText("O produto informado não foi localizado!")
             msg.exec()
 
     def verificar_conexão_api(self):
+	"""
+	Verifica se a requisição da API  foi bem sucedida
+	:returns: bool = True caso a conexão seja bem sucedida e False em caso de erro na requisição
+	"""
         try:
             api_host = getenv("API_HOST")
             requests.get(f'{api_host}/')
@@ -414,7 +437,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             return True
             
     def montar_objeto_estoque(self, dados):
-        estoques = list()
+        """
+	Forma uma lista de dicionários contendo informações de cada produto do banco de dados
+	:returns: list
+	"""
+	estoques = list()
         for data in dados:
             estoque = dict()
             estoque['cod'] = data[0]
@@ -433,7 +460,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         
 
     def sincronizar_manualmente(self):
-        db = DB_Gerentia()
+        """
+	Função para realizar a requisição da API, dentro desta função também é chamada as outras funções relacionada a API.
+	:returns: None
+	"""
+
+	db = DB_Gerentia()
         db.conexao()
         
         requisição_bem_sucessida = self.verificar_conexão_api()
@@ -498,11 +530,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     ####################################################################################################
     # FUNÇÕES PARA OS FUNCIONÁRIOS
     def limpa_lineEdit(self):
+	"""
+	Limpa os campos de texto 'Usuário', 'Senha' e 'Confirmar Senha' no menu de cadastro de usuários.
+ 	:returns: None
+	"""
         self.txt_cUsuario.clear()
         self.txt_cSenha.clear()
         self.txt_cConfiSenha.clear()
 
     def cadastro_de_usuario(self):
+	"""
+	Função para criação de cadastro de usuário. Analisa os elementos dos campos de texto 'Usuário', 'Senha' e 'Confirmar Senha', cria uma matrícula para o funcionário
+	automaticamente e define um cargo através da entrada padrão, realiza tratamento de erros dessas informações e salva na tabela do banco de dados.
+	:returns: int = -1 em caso de erro
+	"""
         usuario = str(self.txt_cUsuario.text().strip())
         senha = str(self.txt_cSenha.text().strip())
         confirma_senha = str(self.txt_cConfiSenha.text().strip())
@@ -579,6 +620,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 msg.exec()
 
     def remover_usuario(self):
+	"""
+	Realiza conexão com o banco de dados e remove o funcionário da tabela do programa e do banco de dados
+	:returns: None
+	"""
         db = DB_Gerentia()
         db.conexao()
 
