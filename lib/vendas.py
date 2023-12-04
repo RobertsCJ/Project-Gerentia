@@ -1,6 +1,6 @@
 import sqlite3
 from datetime import datetime
-from lib.estoque import ver_estoque
+from lib.estoque import *
 from lib.adm import *
 
 def criar_tabela_vendas(cursor) -> None:

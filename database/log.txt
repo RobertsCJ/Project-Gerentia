@@ -61,3 +61,99 @@ user|Saturday|04/11/2023|14:54:32|
 	-> user foi demitido
 guest|Saturday|04/11/2023|14:55:30|
 	-> falha na tentativa de entrada
+guest|Sunday|03/12/2023|23:37:07|
+	-> falha na tentativa de entrada
+guest|Sunday|03/12/2023|23:37:55|
+	-> falha na tentativa de entrada
+guest|Sunday|03/12/2023|23:38:49|
+	-> falha na tentativa de entrada
+Admin|Sunday|03/12/2023|23:40:25|
+	-> Entrou no sistema
+Admin|Sunday|03/12/2023|23:42:35|
+	-> Entrou no sistema
+Admin|Sunday|03/12/2023|23:43:31|
+	-> Entrou no sistema
+guest|Sunday|03/12/2023|23:43:50|
+	-> falha na tentativa de entrada
+Admin|Sunday|03/12/2023|23:44:02|
+	-> Entrou no sistema
+guest|Sunday|03/12/2023|23:45:27|
+	-> falha na tentativa de entrada
+Admin|Sunday|03/12/2023|23:45:39|
+	-> Entrou no sistema
+user|Sunday|03/12/2023|23:46:53|
+	-> "bluepen" cadastrado no sistema
+user|Sunday|03/12/2023|23:47:50|
+	-> user foi demitido
+guest|Sunday|03/12/2023|23:49:40|
+	-> falha na tentativa de entrada
+guest|Sunday|03/12/2023|23:49:55|
+	-> falha na tentativa de entrada
+Admin|Sunday|03/12/2023|23:50:06|
+	-> Entrou no sistema
+Admin|Sunday|03/12/2023|23:51:25|
+	-> Entrou no sistema
+user|Sunday|03/12/2023|23:51:54|
+	-> "bluepen" cadastrado no sistema
+guest|Sunday|03/12/2023|23:53:07|
+	-> falha na tentativa de entrada
+Admin|Sunday|03/12/2023|23:53:18|
+	-> Entrou no sistema
+user|Sunday|03/12/2023|23:53:36|
+	-> user foi demitido
+user|Sunday|03/12/2023|23:53:43|
+	-> user foi demitido
+Admin|Sunday|03/12/2023|23:56:52|
+	-> Entrou no sistema
+user|Sunday|03/12/2023|23:57:06|
+	-> user foi demitido
+user|Sunday|03/12/2023|23:57:14|
+	-> user foi demitido
+Admin|Sunday|03/12/2023|23:58:21|
+	-> Entrou no sistema
+user|Sunday|03/12/2023|23:58:27|
+	-> user foi demitido
+user|Sunday|03/12/2023|23:58:35|
+	-> user foi demitido
+user|Sunday|03/12/2023|23:58:43|
+	-> user foi demitido
+user|Sunday|03/12/2023|23:58:49|
+	-> user foi demitido
+Admin|Monday|04/12/2023|00:01:25|
+	-> Entrou no sistema
+user|Monday|04/12/2023|00:01:43|
+	-> user foi demitido
+Admin|Monday|04/12/2023|00:03:05|
+	-> Entrou no sistema
+user|Monday|04/12/2023|00:03:14|
+	-> user foi demitido
+usuario|Monday|04/12/2023|00:03:16|
+	-> saiu do sistema
+guest|Monday|04/12/2023|00:03:34|
+	-> falha na tentativa de entrada
+Admin|Monday|04/12/2023|00:05:14|
+	-> Entrou no sistema
+guest|Monday|04/12/2023|00:06:18|
+	-> falha na tentativa de entrada
+Admin|Monday|04/12/2023|00:06:30|
+	-> Entrou no sistema
+user|Monday|04/12/2023|00:06:49|
+	-> Dado Y  alterado
+user|Monday|04/12/2023|00:07:36|
+	-> user foi demitido
+user|Monday|04/12/2023|00:07:54|
+	-> user foi demitido
+user|Monday|04/12/2023|00:08:19|
+	-> "bluepen" cadastrado no sistema
+usuario|Monday|04/12/2023|00:08:23|
+	-> saiu do sistema
+bluepen|Monday|04/12/2023|00:08:42|
+	-> Entrou no sistema
+usuario|Monday|04/12/2023|00:08:55|
+	-> saiu do sistema
+Maria|Monday|04/12/2023|00:09:10|
+	-> Entrou no sistema
+nome_usuario|Monday|04/12/2023|00:09:18|
+	-> X produto vendido
+usuario|Monday|04/12/2023|00:09:36|
+	-> saiu do sistema

@@ -1,7 +1,7 @@
 import os
 
 def check_module(module) -> bool:
-	return True if os.system(f'python -m {module}') == 0  else False
+	return True if os.system(f'python3 -m {module}') == 0  else False
 
 
 if check_module("pwinput"):

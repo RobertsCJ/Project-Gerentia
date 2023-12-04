@@ -9,57 +9,57 @@ from datetime import datetime
 so = 'cls' if os.name == 'nt' else 'clear'
 
 def limpar_a_tela() -> None:
-    """
-    Limpa a tela do terminal.
-    :return: nothing
-    """
-    exec(f"system('{so}')")
+	"""
+	Limpa a tela do terminal.
+	:return: nothing
+	"""
+	exec(f"system('{so}')")
 
 
 def log(user, action):
-			"""
-			Recolhe do sistema o usuário, data atual, hora atual e dia da semana formatado e converte em arquivo .txt  
-			:returns: nothing
-			"""
-            date_now = datetime.now().date()
-            time_now = datetime.now().time()
-            data = ''
+		"""
+		Recolhe do sistema o usuário, data atual, hora atual e dia da semana formatado e converte em arquivo .txt  
+		:returns: nothing
+		"""
+		date_now = datetime.now().date()            
+		time_now = datetime.now().time()
+		data = ''
 
-            data += user + '|'
-            data += str(date_now.strftime('%A')) + '|'
-            data += str(date_now.strftime('%d/%m/%Y')) + '|'
-            data += str(time_now)[:8] + '|\n'
-            data += '\t-> ' + action + '\n'
-            with open("database/log.txt", 'a') as file:
-                file.write(data)
-
+		data += user + '|'
+		data += str(date_now.strftime('%A')) + '|'
+		data += str(date_now.strftime('%d/%m/%Y')) + '|'
+		data += str(time_now)[:8] + '|\n'
+		data += '\t-> ' + action + '\n'
+		with open("database/log.txt", 'a') as file:
+			file.write(data)
+		
 
 def criar_tabela_funcionarios(cursor):
-    """
-    Cria uma tabela de funcionários se ela não existir.
-    :param cursor: Cursor do banco de dados SQLite.
-    :return:
-    """
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS funcionarios (
-        matricula NOT NULL PRIMARY KEY,
-        nome VARCHAR(100) NOT NULL,
-        cargo VARCHAR(100),
-        nome_usuario VARCHAR(100),
-        senha VARCHAR(25)
-        );
-    """)
+	"""
+	Cria uma tabela de funcionários se ela não existir.
+	:param cursor: Cursor do banco de dados SQLite.
+	:return:
+	"""
+	cursor.execute("""
+		CREATE TABLE IF NOT EXISTS funcionarios (
+		matricula NOT NULL PRIMARY KEY,
+		nome VARCHAR(100) NOT NULL,
+		cargo VARCHAR(100),
+		nome_usuario VARCHAR(100),
+		senha VARCHAR(25)
+		);
+	""")
 
 class Funcionario:
 	def __init__(self, matricula, nome, cargo, nome_usuario, senha):
 		self.matricula = matricula
 		self.nome = nome
 		self.cargo = cargo
-		self.nome_usuario = usuario
+		self.nome_usuario = nome_usuario
 		self.senha = senha
 class BD_Funcionarios:
 	def __init__(self, cursor):
-	self.cursor = cursor
+		self.cursor = cursor
 
 	def cadastrar_funcionario(self):
 		"""
@@ -68,7 +68,7 @@ class BD_Funcionarios:
 		:return: nothing
 		"""
 		limpar_a_tela()
-		criar_tabela_funcionarios(cursor)
+		criar_tabela_funcionarios(self.cursor)
 		matricula = secrets.token_hex(5) 
 		nome = str(input('Nome do funcionário: '))
 		cargo = str(input('Cargo do funcionário? '))
@@ -77,9 +77,9 @@ class BD_Funcionarios:
 		funcionario = Funcionario(matricula, nome, cargo, nome_usuario, senha)
 
 		self.cursor.execute("""
-	    	INSERT INTO funcionarios (matricula, nome, cargo, nome_usuario, senha)
-	    	VALUES(?, ?, ?, ?, ?);
-	    	""", (funcionario.matricula, funcionario.nome, funcionario.cargo, funcionario.nome_usuario, funcionario.senha))
+			INSERT INTO funcionarios (matricula, nome, cargo, nome_usuario, senha)
+			VALUES(?, ?, ?, ?, ?);
+			""", (funcionario.matricula, funcionario.nome, funcionario.cargo, funcionario.nome_usuario, funcionario.senha))
 		log("user", f'"{funcionario.nome_usuario}" cadastrado no sistema')
 
 	def demitir_funcionario(self):
@@ -89,6 +89,7 @@ class BD_Funcionarios:
 		:return:
 		"""
 		limpar_a_tela()
+		self.mostrar_funcionarios()
 		print(f'{"-" * 100}\n{"REMOVENDO FUNCIONÁRIO":^100}\n{"-" * 100}')
 		matricula = str(input('Informe a matricula do funcionário: '))
 		self.cursor.execute("""
@@ -103,8 +104,9 @@ class BD_Funcionarios:
 		:param self:
 		:return:
 		"""
+		limpar_a_tela()
 		print(f'{"-"*160}\n{"ATUALIZAÇÃO CADASTRAL":^160}\n{"-"*160}')
-		mostrar_funcionarios(self.cursor)
+		self.mostrar_funcionarios()
 		matricula = str(input('Informe a matricula do funcionário: '))
 		novo_cargo = str(input('Qual será o novo cargo do funcionário? '))
 		self.cursor.execute("""
@@ -131,51 +133,51 @@ class BD_Funcionarios:
 
 
 	def ver_vendas_de_um_dia(self) -> None:
-	    """
-	    Solicita ao usuário que insira um dia, mês e ano. Em seguida, recupera todos os registros da tabela 'vendas'
-	    que têm a data especificada e os imprime.
-	    :param self:
-	    :return:
-	    """
-	    total = 0
-	    dia = input('Digite o dia: ')
-	    mes = input('Digite o mês: ')
-	    ano = input('Digite o ano: ')
-	    data = f'{ano}-{mes}-{dia}'
+		"""
+		Solicita ao usuário que insira um dia, mês e ano. Em seguida, recupera todos os registros da tabela 'vendas'
+		que têm a data especificada e os imprime.
+		:param self:
+		:return:
+		"""
+		total = 0
+		dia = input('Digite o dia: ')
+		mes = input('Digite o mês: ')
+		ano = input('Digite o ano: ')
+		data = f'{ano}-{mes}-{dia}'
 
-	    self.cursor.execute("""
-	    SELECT * FROM vendas WHERE data = ?;
-	    """, (data,))
-	    vendas = self.cursor.fetchall()
+		self.cursor.execute("""
+		SELECT * FROM vendas WHERE data = ?;
+		""", (data,))
+		vendas = self.cursor.fetchall()
 
-	    print(f'{"-"*160}\n{"VENDAS DO DIA":^160}\n{"-"*160}')
-	    print(f'{"ID":4} | {"NOME":20} | {"QUANTIDADE":10} | {"VALOR":5} | {"TOTAL":5} | {"DATA":10} | {"HORA"}')
-	    print(f'{"-"*160}')
-	    for venda in vendas:
-	        print(f'{venda[0]:4} | {venda[1]:20} | {venda[2]:10} | {venda[3]:5} | {venda[4]:5} | {venda[5]:10} | {venda[6]}')
-	        total += venda[4]
-	    print(f'O total vendido R${total:.2f}')
+		print(f'{"-"*160}\n{"VENDAS DO DIA":^160}\n{"-"*160}')
+		print(f'{"ID":4} | {"NOME":20} | {"QUANTIDADE":10} | {"VALOR":5} | {"TOTAL":5} | {"DATA":10} | {"HORA"}')
+		print(f'{"-"*160}')
+		for venda in vendas:
+			print(f'{venda[0]:4} | {venda[1]:20} | {venda[2]:10} | {venda[3]:5} | {venda[4]:5} | {venda[5]:10} | {venda[6]}')
+			total += venda[4]
+		print(f'O total vendido R${total:.2f}')
 
 
 	def ver_vendas(self) -> None:
-	    """
-	    Recupera todos os registros da tabela 'vendas' e os imprime.
-	    :param self:
-	    :return:
-	    """
-	    total = 0
-	    self.cursor.execute("""
-	    SELECT * FROM vendas;
-	    """)
-	    vendas = self.cursor.fetchall()
+		"""
+		Recupera todos os registros da tabela 'vendas' e os imprime.
+		:param self:
+		:return:
+		"""
+		total = 0
+		self.cursor.execute("""
+		SELECT * FROM vendas;
+		""")
+		vendas = self.cursor.fetchall()
 
-	    print(f'{"-"*160}\n{"VENDAS REALIZADAS":^160}\n{"-"*160}')
-	    print(f'{"ID":4} | {"NOME":20} | {"QUANTIDADE":10} | {"VALOR":5} | {"TOTAL":5} | {"DATA":10} | {"HORA"}')
-	    print(f'{"-"*160}')
-	    for venda in vendas:
-	        print(f'{venda[0]:4} | {venda[1]:20} | {venda[2]:10} | {venda[3]:5} | {venda[4]:5} | {venda[5]:10} | {venda[6]}')
-	        total += venda[4]
-	    print(f'O total vendido R${total:.2f}')
+		print(f'{"-"*160}\n{"VENDAS REALIZADAS":^160}\n{"-"*160}')
+		print(f'{"ID":4} | {"NOME":20} | {"QUANTIDADE":10} | {"VALOR":5} | {"TOTAL":5} | {"DATA":10} | {"HORA"}')
+		print(f'{"-"*160}')
+		for venda in vendas:
+			print(f'{venda[0]:4} | {venda[1]:20} | {venda[2]:10} | {venda[3]:5} | {venda[4]:5} | {venda[5]:10} | {venda[6]}')
+			total += venda[4]
+		print(f'O total vendido R${total:.2f}')
 
 
 def menu():
@@ -183,13 +185,13 @@ def menu():
 	Template visual para menu de administrador
 	:returns: nothing
 	"""
-    print(f"""{"-"*160}\n{"MENU":^160}\n{"-"*160}
-1 - CADASTRAR FUNCIONÁRIO 
-2 - ATUALIZAR CADASTRO
-3 - VER FUNCIONÁRIOS
-4 - DEMITIR FUNCIONÁRIOS
-5 - SAIR\n{"-"*160}
-    """)
+	print(f"""{"-"*160}\n{"MENU":^160}\n{"-"*160} 
+	1 - CADASTRAR FUNCIONÁRIO 
+	2 - ATUALIZAR CADASTRO
+	3 - VER FUNCIONÁRIOS
+	4 - DEMITIR FUNCIONÁRIOS
+	5 - SAIR\n{"-"*160}
+	""")
 
 
 def sistema_adm():
@@ -209,13 +211,13 @@ def sistema_adm():
 		if opcao == 1:
 			BD.cadastrar_funcionario()
 		elif opcao == 2:
-            		BD.alterar_dados()
+			BD.alterar_dados()
 		elif opcao == 3:
 			BD.mostrar_funcionarios()
 		elif opcao == 4:
 			BD.demitir_funcionario()
 		elif opcao == 5:
-			BD.log('usuario', 'saiu do sistema')
+			log('usuario', 'saiu do sistema')
 			continuar = False
 		else:
 			print('ERRO! Opção inválida.')
