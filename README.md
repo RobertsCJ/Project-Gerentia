@@ -1,4 +1,4 @@
-# Project-Gerentia
+# Gerentia - Sistema de gerenciamento de estoque.
 
 O Gerentia é um sistema de gerenciamento de estoque (SGE) eficiente, projetado para otimizar as operações de estoque da empresa. Principais características do Gerentia:
 
